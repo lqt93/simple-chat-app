@@ -1,11 +1,14 @@
 import React from "react";
+import { withRouter } from "react-router-dom";
 import SigninPage from "../../components/pages/Signin";
+import request from "../../utils/request";
 
 class SigninContainer extends React.Component {
   state = {
     email: "",
     password: "",
-    isSubmitting: false
+    loading: false,
+    error: false
   };
   handleChange = e => {
     e.persist();
@@ -13,12 +16,48 @@ class SigninContainer extends React.Component {
       [e.target.name]: e.target.value
     });
   };
-  submit = e => {
+  submit = async e => {
     e.preventDefault();
-    console.log(e);
+    this.setState({
+      loading: true,
+      error: false
+    });
+    const { email, password } = this.state;
+    try {
+      const res = await request({
+        url: "/users/auth",
+        method: "POST",
+        data: {
+          email,
+          password
+        }
+      });
+      if (res.data.status === "success") {
+        localStorage.setItem("user", JSON.stringify(res.data.data.user));
+        localStorage.setItem("token", res.data.data.token);
+        this.setState(
+          {
+            loading: false
+          },
+          () => {
+            this.props.history.push("/");
+          }
+        );
+      } else {
+        this.setState({
+          loading: false,
+          error: res.data.message
+        });
+      }
+    } catch (err) {
+      this.setState({
+        loading: false,
+        error: err
+      });
+      console.log("err", err);
+    }
   };
   render() {
-    console.log(">>> state", this.state);
     return (
       <SigninPage
         handleChange={this.handleChange}
@@ -29,4 +68,4 @@ class SigninContainer extends React.Component {
   }
 }
 
-export default SigninContainer;
+export default withRouter(SigninContainer);
