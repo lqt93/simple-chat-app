@@ -1,8 +1,8 @@
 import React from "react";
 import { Switch, Route } from "react-router-dom";
-import Layout from "../../components/Layout";
-import HomePage from "../HomePage";
-import NotFoundPage from "../NotFoundPage";
+import Layout from "../../components/templates/Layout";
+import HomePage from "../HomeContainer";
+import NotFoundPage from "../NotFoundContainer";
 
 function App() {
   return (
