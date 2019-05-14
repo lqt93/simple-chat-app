@@ -5,16 +5,52 @@ import HomePage from "../HomeContainer";
 import NotFoundPage from "../NotFoundContainer";
 import SigninPage from "../SigninContainer";
 
-function App() {
-  return (
-    <Layout>
-      <Switch>
-        <Route exact path="/" component={HomePage} />
-        <Route path="/signin" component={SigninPage} />
-        <Route component={NotFoundPage} />
-      </Switch>
-    </Layout>
-  );
+const INITIAL_STATE = {
+  user: null,
+  token: ""
+};
+
+class App extends React.Component {
+  state = {
+    ...INITIAL_STATE
+  };
+  setAuthValue = (field, val) => {
+    this.setState({ [field]: val });
+  };
+  signOut = () => {
+    // sign out APIs
+    // ....
+    // clear localStorage
+    localStorage.removeItem("user");
+    localStorage.removeItem("token");
+    // clear state
+    this.setState({ ...INITIAL_STATE });
+  };
+  render() {
+    const { user } = this.state;
+    return (
+      <Layout authUser={user} signOut={this.signOut}>
+        <Switch>
+          <Route
+            exact
+            path="/"
+            render={props => <HomePage authUser={user} {...props} />}
+          />
+          <Route
+            path="/signin"
+            render={props => (
+              <SigninPage
+                setAuthValue={this.setAuthValue}
+                signOut={this.signOut}
+                {...props}
+              />
+            )}
+          />
+          <Route component={NotFoundPage} />
+        </Switch>
+      </Layout>
+    );
+  }
 }
 
 export default App;

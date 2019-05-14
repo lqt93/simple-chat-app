@@ -3,12 +3,16 @@ import { withRouter } from "react-router-dom";
 import SigninPage from "../../components/pages/Signin";
 import request from "../../utils/request";
 
+const INITIAL_STATE = {
+  email: "",
+  password: "",
+  loading: false,
+  error: false
+};
+
 class SigninContainer extends React.Component {
   state = {
-    email: "",
-    password: "",
-    loading: false,
-    error: false
+    ...INITIAL_STATE
   };
   handleChange = e => {
     e.persist();
@@ -33,16 +37,16 @@ class SigninContainer extends React.Component {
         }
       });
       if (res.data.status === "success") {
-        localStorage.setItem("user", JSON.stringify(res.data.data.user));
-        localStorage.setItem("token", res.data.data.token);
-        this.setState(
-          {
-            loading: false
-          },
-          () => {
-            this.props.history.push("/");
-          }
-        );
+        const recUser = res.data.value.user || null;
+        const recToken = res.data.value.token || null;
+        localStorage.setItem("user", JSON.stringify(recUser));
+        localStorage.setItem("token", recToken);
+        await this.props.setAuthValue("user", recUser);
+        await this.props.setAuthValue("token", recToken);
+        await this.setState({
+          ...INITIAL_STATE
+        });
+        this.props.history.push("/");
       } else {
         this.setState({
           loading: false,

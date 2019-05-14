@@ -3,11 +3,11 @@ import Header from "./Header";
 import Body from "./Body";
 import Footer from "./Footer";
 
-function Layout(props) {
+function Layout({ children, authUser, signOut }) {
   return (
     <div>
-      <Header />
-      <Body>{props.children}</Body>
+      <Header authUser={authUser} signOut={signOut} />
+      <Body>{children}</Body>
       <Footer />
     </div>
   );
