@@ -1,13 +1,14 @@
 import React from "react";
+import AuthHomeContainer from "./AuthHomeContainer";
+import PubHomeContainer from "./PubHomeContainer";
 
-class HomeContainer extends React.Component {
-  render() {
-    return (
-      <div>
-        <h1> Home page </h1>
-      </div>
-    );
-  }
+function HomeContainer(props) {
+  return (
+    <React.Fragment>
+      {props.authUser && <AuthHomeContainer {...props} />}
+      {!props.authUser && <PubHomeContainer {...props} />}
+    </React.Fragment>
+  );
 }
 
 export default HomeContainer;
