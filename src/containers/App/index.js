@@ -2,12 +2,14 @@ import React from "react";
 import socket from "socket.io-client";
 import { Switch, Route } from "react-router-dom";
 import Layout from "../../components/templates/Layout";
+import validateAuth from "../../utils/validateAuth";
 import HomePage from "../HomeContainer";
 import NotFoundPage from "../NotFoundContainer";
 import SigninPage from "../SigninContainer";
+import MessengerPage from "../MessengerContainer";
 
 const INITIAL_STATE = {
-  user: null,
+  authUser: null,
   token: ""
 };
 
@@ -16,7 +18,7 @@ class App extends React.Component {
     ...INITIAL_STATE
   };
   componentDidMount() {
-    if (this.state.user) socket("http://localhost:8000");
+    if (this.state.authUser) socket("http://localhost:8000");
   }
   setAuthValue = (field, val) => {
     this.setState({ [field]: val });
@@ -25,20 +27,20 @@ class App extends React.Component {
     // sign out APIs
     // ....
     // clear localStorage
-    localStorage.removeItem("user");
+    localStorage.removeItem("authUser");
     localStorage.removeItem("token");
     // clear state
     this.setState({ ...INITIAL_STATE });
   };
   render() {
-    const { user } = this.state;
+    const { authUser } = this.state;
     return (
-      <Layout authUser={user} signOut={this.signOut}>
+      <Layout authUser={authUser} signOut={this.signOut}>
         <Switch>
           <Route
             exact
             path="/"
-            render={props => <HomePage authUser={user} {...props} />}
+            render={props => <HomePage authUser={authUser} />}
           />
           <Route
             path="/signin"
@@ -46,9 +48,12 @@ class App extends React.Component {
               <SigninPage
                 setAuthValue={this.setAuthValue}
                 signOut={this.signOut}
-                {...props}
               />
             )}
+          />
+          <Route
+            path="/rooms/:id"
+            render={props => validateAuth(authUser)(<MessengerPage />)}
           />
           <Route component={NotFoundPage} />
         </Switch>
