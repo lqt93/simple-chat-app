@@ -1,4 +1,5 @@
 import React from "react";
+import socket from "socket.io-client";
 import { Switch, Route } from "react-router-dom";
 import Layout from "../../components/templates/Layout";
 import HomePage from "../HomeContainer";
@@ -14,6 +15,9 @@ class App extends React.Component {
   state = {
     ...INITIAL_STATE
   };
+  componentDidMount() {
+    if (this.state.user) socket("http://localhost:8000");
+  }
   setAuthValue = (field, val) => {
     this.setState({ [field]: val });
   };
