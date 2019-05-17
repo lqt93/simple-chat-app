@@ -2,6 +2,7 @@ import React from "react";
 import { withRouter } from "react-router-dom";
 import ChatBoxContainer from "./ChatBoxContainer";
 import request from "../../utils/request";
+import socket from "../../utils/socket";
 
 const INITIAL_STATE = {
   roomInfo: null,
@@ -12,8 +13,13 @@ class MessengerContainer extends React.Component {
   state = {
     ...INITIAL_STATE
   };
-  componentDidMount() {
-    this.getRoomBasicInfo();
+  async componentDidMount() {
+    await this.getRoomBasicInfo();
+    const id = this.state.roomInfo._id;
+    socket.emit("join_room", id);
+    socket.on("room_msg", function(a) {
+      console.log("received msg:", a);
+    });
   }
   async getRoomBasicInfo() {
     const roomId = this.props.match.params.id;

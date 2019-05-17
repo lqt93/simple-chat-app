@@ -1,5 +1,4 @@
 import React from "react";
-import socket from "socket.io-client";
 import { Switch, Route } from "react-router-dom";
 import Layout from "../../components/templates/Layout";
 import validateAuth from "../../utils/validateAuth";
@@ -17,9 +16,7 @@ class App extends React.Component {
   state = {
     ...INITIAL_STATE
   };
-  componentDidMount() {
-    if (this.state.authUser) socket("http://localhost:8000");
-  }
+  componentDidMount() {}
   setAuthValue = (field, val) => {
     this.setState({ [field]: val });
   };
@@ -53,7 +50,9 @@ class App extends React.Component {
           />
           <Route
             path="/rooms/:id"
-            render={props => validateAuth(authUser)(<MessengerPage />)}
+            render={props =>
+              validateAuth(authUser)(<MessengerPage authUser={authUser} />)
+            }
           />
           <Route component={NotFoundPage} />
         </Switch>

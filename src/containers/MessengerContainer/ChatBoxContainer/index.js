@@ -1,11 +1,12 @@
 import React from "react";
 import ChatBox from "../../../components/pages/Messenger/ChatBox";
 import request from "../../../utils/request";
+import socket from "../../../utils/socket";
 
 const INITIAL_STATE = {
   messages: null,
   currentInput: "",
-  loading: false
+  loadingMessages: false
 };
 
 class ChatBoxContainer extends React.Component {
@@ -18,7 +19,7 @@ class ChatBoxContainer extends React.Component {
   async getMessages() {
     const roomId = this.props.match.params.id;
     this.setState({
-      loading: true
+      loadingMessages: true
     });
     try {
       const res = await request({
@@ -27,28 +28,62 @@ class ChatBoxContainer extends React.Component {
       });
       if (res.data.status === "success") {
         this.setState({
-          loading: false,
+          loadingMessages: false,
           messages: res.data.value.messages
         });
       } else {
         this.setState({
-          loading: false,
+          loadingMessages: false,
           error: res.data.message
         });
       }
     } catch (err) {
       this.setState({
-        loading: false,
+        loadingMessages: false,
         error: err
       });
       console.log("err", err);
     }
   }
-  handleChange = e => {};
-  submit = e => {};
+  handleChange = e => {
+    e.persist();
+    this.setState({
+      currentInput: e.target.value
+    });
+  };
+  submit = async e => {
+    e.preventDefault();
+    const roomId = this.props.roomInfo._id;
+    const messageValue = this.state.currentInput;
+    const owner = this.props.authUser;
+    this.setState(prevState => {
+      const newMessages = prevState.messages.push({
+        value: messageValue,
+        type: "text",
+        owner: owner
+      });
+      return {
+        messages: newMessages,
+        ...prevState
+      };
+    });
+    try {
+      const res = await request({
+        url: `/messages`,
+        method: "POST",
+        data: {
+          value: messageValue,
+          roomId
+        }
+      });
+    } catch (err) {
+      console.log("err", err);
+    }
+  };
   render() {
     const { messages, currentInput } = this.state;
     const { roomInfo } = this.props;
+    console.log("chat box props", this.props);
     return (
       <ChatBox
         messages={messages}
