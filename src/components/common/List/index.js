@@ -5,8 +5,13 @@ function List({ list, ItemComponent }) {
     <ul>
       {list &&
         list.length > 0 &&
-        list.map(item => {
-          return <ItemComponent key={item.id || item._id} data={item} />;
+        list.map((item, index) => {
+          return (
+            <ItemComponent
+              key={`${item.id || item._id}-${index}`}
+              data={item}
+            />
+          );
         })}
     </ul>
   );
