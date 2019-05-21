@@ -1,5 +1,6 @@
 import React from "react";
 import { Switch, Route } from "react-router-dom";
+import request from "../../utils/request";
 import Layout from "../../components/templates/Layout";
 import validateAuth from "../../utils/validateAuth";
 import HomePage from "../HomeContainer";
@@ -14,12 +15,42 @@ const INITIAL_STATE = {
 
 class App extends React.Component {
   state = {
-    ...INITIAL_STATE
+    ...INITIAL_STATE,
+    isValidated: false
   };
-  componentDidMount() {}
+  componentDidMount() {
+    if (!this.state.isValidated) {
+      this.validateCurrentUser();
+    }
+  }
   setAuthValue = (field, val) => {
     this.setState({ [field]: val });
   };
+  async validateCurrentUser() {
+    try {
+      const res = await request({
+        url: "/users/current",
+        method: "GET"
+      });
+      if (res.data.status === "success" && res.data.value) {
+        const authUser = JSON.parse(localStorage.getItem("authUser"));
+        const token = localStorage.getItem("token");
+        this.setState({
+          authUser: authUser,
+          token: token,
+          isValidated: true
+        });
+      } else {
+        this.setState({
+          ...INITIAL_STATE,
+          isValidated: true
+        });
+      }
+    } catch (err) {
+      console.log("err validating user", err);
+      this.setState({ ...INITIAL_STATE, isValidated: true });
+    }
+  }
   signOut = () => {
     // sign out APIs
     // ....
@@ -30,7 +61,8 @@ class App extends React.Component {
     this.setState({ ...INITIAL_STATE });
   };
   render() {
-    const { authUser } = this.state;
+    const { authUser, isValidated } = this.state;
+    if (!isValidated) return null;
     return (
       <Layout authUser={authUser} signOut={this.signOut}>
         <Switch>
