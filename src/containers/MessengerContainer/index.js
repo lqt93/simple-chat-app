@@ -17,9 +17,6 @@ class MessengerContainer extends React.Component {
     await this.getRoomBasicInfo();
     const id = this.state.roomInfo._id;
     socket.emit("join_room", id);
-    socket.on("room_msg", function(a) {
-      console.log("received msg:", a);
-    });
   }
   async getRoomBasicInfo() {
     const roomId = this.props.match.params.id;
@@ -52,9 +49,16 @@ class MessengerContainer extends React.Component {
   }
 
   render() {
+    const { authUser } = this.props;
     const { roomInfo } = this.state;
     if (!roomInfo) return <div />;
-    return <ChatBoxContainer roomInfo={roomInfo} {...this.props} />;
+    return (
+      <ChatBoxContainer
+        roomInfo={roomInfo}
+        {...this.props}
+        authUser={authUser}
+      />
+    );
   }
 }
 

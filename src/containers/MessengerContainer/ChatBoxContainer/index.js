@@ -15,6 +15,20 @@ class ChatBoxContainer extends React.Component {
   };
   componentDidMount() {
     this.getMessages();
+    const _this = this;
+    const { authUser } = this.props;
+    socket.on("room_msg", function(msg) {
+      console.log("received msg:", msg);
+      if (authUser._id !== msg.owner) {
+        _this.setState(prevState => {
+          const newMessages = prevState.messages.push(msg);
+          return {
+            messages: newMessages,
+            ...prevState
+          };
+        });
+      }
+    });
   }
   async getMessages() {
     const roomId = this.props.match.params.id;
@@ -64,7 +78,8 @@ class ChatBoxContainer extends React.Component {
       });
       return {
         messages: newMessages,
-        ...prevState
+        ...prevState,
+        currentInput: ""
       };
     });
     try {
@@ -83,7 +98,6 @@ class ChatBoxContainer extends React.Component {
   render() {
     const { messages, currentInput } = this.state;
     const { roomInfo } = this.props;
-    console.log("chat box props", this.props);
     return (
       <ChatBox
         messages={messages}
