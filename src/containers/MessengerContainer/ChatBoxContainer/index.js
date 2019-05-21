@@ -19,7 +19,7 @@ class ChatBoxContainer extends React.Component {
     const { authUser } = this.props;
     socket.on("room_msg", function(msg) {
       console.log("received msg:", msg);
-      if (authUser._id !== msg.owner) {
+      if (authUser._id !== msg.owner._id) {
         _this.setState(prevState => {
           const newMessages = prevState.messages.push(msg);
           return {
