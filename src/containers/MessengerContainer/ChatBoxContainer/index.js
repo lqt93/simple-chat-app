@@ -68,6 +68,9 @@ class ChatBoxContainer extends React.Component {
     e.preventDefault();
     const roomId = this.props.roomInfo._id;
     const messageValue = this.state.currentInput;
+    if (!messageValue) {
+      return;
+    }
     const owner = this.props.authUser;
     this.setState(prevState => {
       const messages = prevState.messages.concat({
