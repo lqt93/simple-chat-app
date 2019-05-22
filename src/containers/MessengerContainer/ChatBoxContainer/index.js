@@ -21,10 +21,9 @@ class ChatBoxContainer extends React.Component {
       console.log("received msg:", msg);
       if (authUser._id !== msg.owner._id) {
         _this.setState(prevState => {
-          const newMessages = prevState.messages.push(msg);
+          const messages = prevState.messages.concat(msg);
           return {
-            messages: newMessages,
-            ...prevState
+            messages
           };
         });
       }
@@ -71,14 +70,13 @@ class ChatBoxContainer extends React.Component {
     const messageValue = this.state.currentInput;
     const owner = this.props.authUser;
     this.setState(prevState => {
-      const newMessages = prevState.messages.push({
+      const messages = prevState.messages.concat({
         value: messageValue,
         type: "text",
         owner: owner
       });
       return {
-        messages: newMessages,
-        ...prevState,
+        messages,
         currentInput: ""
       };
     });
