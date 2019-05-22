@@ -6,8 +6,13 @@ import socket from "../../../utils/socket";
 const INITIAL_STATE = {
   messages: null,
   currentInput: "",
-  loadingMessages: false
+  skip: 0,
+  count: 0,
+  loadingMessages: false,
+  loadingMore: false
 };
+
+const STEP = 10;
 
 class ChatBoxContainer extends React.Component {
   state = {
@@ -30,6 +35,16 @@ class ChatBoxContainer extends React.Component {
       }
     });
   }
+  handleScroll = () => {
+    const target = this.msgContainerRef.current;
+    if (
+      target.scrollTop === 0 &&
+      !this.state.loadingMore &&
+      this.state.count > this.state.messages.length
+    ) {
+      this.getMoreMessages();
+    }
+  };
   scrollToBottom() {
     if (!this.msgContainerRef || !this.msgContainerRef.current) return;
     const target = this.msgContainerRef.current;
@@ -37,6 +52,41 @@ class ChatBoxContainer extends React.Component {
     const height = target.clientHeight;
     const maxScrollTop = scrollHeight - height;
     target.scrollTop = maxScrollTop > 0 ? maxScrollTop : 0;
+  }
+  async getMoreMessages() {
+    const roomId = this.props.match.params.id;
+    this.setState({
+      loadingMore: true
+    });
+    try {
+      const { skip } = this.state;
+      const res = await request({
+        url: `/rooms/${roomId}/messages?skip=${skip}`,
+        method: "GET"
+      });
+      if (res.data.status === "success") {
+        await this.setState(prevState => {
+          const messages = res.data.value.messages.concat(prevState.messages);
+          return {
+            messages,
+            skip: prevState.skip + STEP,
+            loadingMore: false,
+            count: res.data.value.count
+          };
+        });
+      } else {
+        this.setState({
+          loadingMore: false,
+          error: res.data.message
+        });
+      }
+    } catch (err) {
+      this.setState({
+        loadingMore: false,
+        error: err
+      });
+      console.log("err", err);
+    }
   }
   async getMessages() {
     const roomId = this.props.match.params.id;
@@ -51,7 +101,9 @@ class ChatBoxContainer extends React.Component {
       if (res.data.status === "success") {
         await this.setState({
           loadingMessages: false,
-          messages: res.data.value.messages
+          messages: res.data.value.messages,
+          count: res.data.value.count,
+          skip: STEP
         });
         this.scrollToBottom();
       } else {
@@ -108,11 +160,13 @@ class ChatBoxContainer extends React.Component {
     }
   };
   render() {
-    const { messages, currentInput } = this.state;
+    const { messages, currentInput, loadingMore } = this.state;
     const { roomInfo } = this.props;
     return (
       <ChatBox
+        handleScroll={this.handleScroll}
         ref={this.msgContainerRef}
+        loadingMore={loadingMore}
         messages={messages}
         roomInfo={roomInfo}
         currentInput={currentInput}

@@ -14,7 +14,18 @@ const MessageItem = ({ data }) => {
 };
 
 const ChatBox = React.forwardRef(
-  ({ messages, roomInfo, currentInput, handleChange, submit }, ref) => {
+  (
+    {
+      messages,
+      roomInfo,
+      currentInput,
+      handleChange,
+      submit,
+      handleScroll,
+      loadingMore
+    },
+    ref
+  ) => {
     return (
       <div>
         <h3>You are in {roomInfo.name}</h3>
@@ -24,7 +35,9 @@ const ChatBox = React.forwardRef(
             height: 500
           }}
           ref={ref}
+          onScroll={handleScroll}
         >
+          {loadingMore && <div style={{ marginLeft: 50 }}>...loading</div>}
           <List list={messages} ItemComponent={MessageItem} />
         </div>
         <Input
