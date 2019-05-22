@@ -14,6 +14,7 @@ class ChatBoxContainer extends React.Component {
     ...INITIAL_STATE
   };
   componentDidMount() {
+    this.msgContainerRef = React.createRef();
     this.getMessages();
     const _this = this;
     const { authUser } = this.props;
@@ -29,6 +30,14 @@ class ChatBoxContainer extends React.Component {
       }
     });
   }
+  scrollToBottom() {
+    if (!this.msgContainerRef || !this.msgContainerRef.current) return;
+    const target = this.msgContainerRef.current;
+    const scrollHeight = target.scrollHeight;
+    const height = target.clientHeight;
+    const maxScrollTop = scrollHeight - height;
+    target.scrollTop = maxScrollTop > 0 ? maxScrollTop : 0;
+  }
   async getMessages() {
     const roomId = this.props.match.params.id;
     this.setState({
@@ -40,10 +49,11 @@ class ChatBoxContainer extends React.Component {
         method: "GET"
       });
       if (res.data.status === "success") {
-        this.setState({
+        await this.setState({
           loadingMessages: false,
           messages: res.data.value.messages
         });
+        this.scrollToBottom();
       } else {
         this.setState({
           loadingMessages: false,
@@ -72,7 +82,7 @@ class ChatBoxContainer extends React.Component {
       return;
     }
     const owner = this.props.authUser;
-    this.setState(prevState => {
+    await this.setState(prevState => {
       const messages = prevState.messages.concat({
         value: messageValue,
         type: "text",
@@ -83,6 +93,7 @@ class ChatBoxContainer extends React.Component {
         currentInput: ""
       };
     });
+    this.scrollToBottom();
     try {
       const res = await request({
         url: `/messages`,
@@ -101,6 +112,7 @@ class ChatBoxContainer extends React.Component {
     const { roomInfo } = this.props;
     return (
       <ChatBox
+        ref={this.msgContainerRef}
         messages={messages}
         roomInfo={roomInfo}
         currentInput={currentInput}
