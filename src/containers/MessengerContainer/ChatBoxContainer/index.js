@@ -12,7 +12,7 @@ const INITIAL_STATE = {
   loadingMore: false
 };
 
-const STEP = 10;
+const STEP = 30;
 
 class ChatBoxContainer extends React.Component {
   state = {
@@ -60,8 +60,16 @@ class ChatBoxContainer extends React.Component {
     });
     try {
       const { skip } = this.state;
+      const sort = {
+        createdAt: "-1"
+      };
+      const query = encodeURI(
+        `?skip=${skip === 0 ? skip + STEP : skip}&sort=${JSON.stringify(
+          sort
+        )}&limit=${STEP}`
+      );
       const res = await request({
-        url: `/rooms/${roomId}/messages?skip=${skip}`,
+        url: `/rooms/${roomId}/messages${query}`,
         method: "GET"
       });
       if (res.data.status === "success") {
@@ -94,14 +102,18 @@ class ChatBoxContainer extends React.Component {
       loadingMessages: true
     });
     try {
+      const sort = {
+        createdAt: "-1"
+      };
+      const query = encodeURI(`?limit=${STEP}&sort=${JSON.stringify(sort)}`);
       const res = await request({
-        url: `/rooms/${roomId}/messages`,
+        url: `/rooms/${roomId}/messages${query}`,
         method: "GET"
       });
       if (res.data.status === "success") {
         await this.setState({
           loadingMessages: false,
-          messages: res.data.value.messages,
+          messages: res.data.value.messages.reverse(),
           count: res.data.value.count,
           skip: STEP
         });
