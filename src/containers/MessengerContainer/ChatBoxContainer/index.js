@@ -12,6 +12,7 @@ const INITIAL_STATE = {
   loadingMore: false
 };
 
+// the number of messages that will be loaded each time
 const STEP = 30;
 
 class ChatBoxContainer extends React.Component {
@@ -21,39 +22,49 @@ class ChatBoxContainer extends React.Component {
   componentDidMount() {
     this.msgContainerRef = React.createRef();
     this.getMessages();
-    const _this = this;
-    const { authUser } = this.props;
-    socket.on("room_msg", function(msg) {
+    this.handleIncomingMessages();
+  }
+  handleIncomingMessages() {
+    // handle incoming messages through socket's io
+    socket.on("room_msg", async msg => {
       console.log("received msg:", msg);
-      if (authUser._id !== msg.owner._id) {
-        _this.setState(prevState => {
-          const messages = prevState.messages.concat(msg);
-          return {
-            messages
-          };
-        });
-      }
+      // look up in current msg list to check if incoming msg is exist or not
+      const existMsg = this.state.messages.find(
+        item => item.timeTicket === msg.timeTicket
+      );
+      if (existMsg) return;
+
+      // add new messages to list
+      await this.setState(prevState => {
+        const messages = prevState.messages.concat(msg);
+        return {
+          messages
+        };
+      });
+
+      // scroll to bottom to show new messages
+      this.scrollToBottom();
     });
   }
   handleScroll = () => {
-    const target = this.msgContainerRef.current;
+    const msgContainerElement = this.msgContainerRef.current;
     if (
-      target.scrollTop === 0 &&
+      msgContainerElement.scrollTop === 0 &&
       !this.state.loadingMore &&
       this.state.count > this.state.messages.length
     ) {
-      this.getMoreMessages(target);
+      this.getMoreMessages(msgContainerElement);
     }
   };
-  scrollToBottom(targetComponent) {
+  scrollToBottom() {
     if (!this.msgContainerRef || !this.msgContainerRef.current) return;
-    const target = this.msgContainerRef.current;
-    const scrollHeight = target.scrollHeight;
-    const height = target.clientHeight;
+    const msgContainerElement = this.msgContainerRef.current;
+    const scrollHeight = msgContainerElement.scrollHeight;
+    const height = msgContainerElement.clientHeight;
     const maxScrollTop = scrollHeight - height;
-    target.scrollTop = maxScrollTop > 0 ? maxScrollTop : 0;
+    msgContainerElement.scrollTop = maxScrollTop > 0 ? maxScrollTop : 0;
   }
-  async getMoreMessages(targetComponent) {
+  async getMoreMessages(msgContainerElement) {
     const roomId = this.props.match.params.id;
     this.setState({
       loadingMore: true
@@ -73,7 +84,10 @@ class ChatBoxContainer extends React.Component {
         method: "GET"
       });
       if (res.data.status === "success") {
-        let prevHeight = targetComponent.scrollHeight;
+        // load more data success
+        // get height of msgContainer before adding new messages
+        let prevHeight = msgContainerElement.scrollHeight;
+        // add new messages
         await this.setState(prevState => {
           const messages = res.data.value.messages.concat(prevState.messages);
           return {
@@ -83,7 +97,9 @@ class ChatBoxContainer extends React.Component {
             count: res.data.value.count
           };
         });
-        targetComponent.scrollTop = targetComponent.scrollHeight - prevHeight;
+        // keep scrollbar at the position before adding new messages
+        msgContainerElement.scrollTop =
+          msgContainerElement.scrollHeight - prevHeight;
       } else {
         // load more fail
         this.setState({
@@ -145,36 +161,51 @@ class ChatBoxContainer extends React.Component {
   submit = async e => {
     e.preventDefault();
     const roomId = this.props.roomInfo._id;
-    const messageValue = this.state.currentInput;
+    // handle message's value before saving
+    const messageValue = this.handleMsgValue(this.state.currentInput);
+    // break if msg value is empty
     if (!messageValue) {
       return;
     }
     const owner = this.props.authUser;
+    // create time ticket to verify this message in other devices through socket
+    const timeTicket = String(new Date());
+
+    // add new message to list
     await this.setState(prevState => {
       const messages = prevState.messages.concat({
         value: messageValue,
         type: "text",
-        owner: owner
+        owner: owner,
+        timeTicket: timeTicket
       });
       return {
         messages,
         currentInput: ""
       };
     });
+
+    // scroll to bottom
     this.scrollToBottom();
+
+    // deliver message to server
     try {
       const res = await request({
         url: `/messages`,
         method: "POST",
         data: {
           value: messageValue,
-          roomId
+          roomId,
+          timeTicket: timeTicket
         }
       });
     } catch (err) {
       console.log("err", err);
     }
   };
+  handleMsgValue(str) {
+    return str.trim();
+  }
   render() {
     const { messages, currentInput, loadingMore } = this.state;
     const { roomInfo } = this.props;
