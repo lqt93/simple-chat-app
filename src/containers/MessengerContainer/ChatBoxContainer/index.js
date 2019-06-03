@@ -42,10 +42,10 @@ class ChatBoxContainer extends React.Component {
       !this.state.loadingMore &&
       this.state.count > this.state.messages.length
     ) {
-      this.getMoreMessages();
+      this.getMoreMessages(target);
     }
   };
-  scrollToBottom() {
+  scrollToBottom(targetComponent) {
     if (!this.msgContainerRef || !this.msgContainerRef.current) return;
     const target = this.msgContainerRef.current;
     const scrollHeight = target.scrollHeight;
@@ -53,7 +53,7 @@ class ChatBoxContainer extends React.Component {
     const maxScrollTop = scrollHeight - height;
     target.scrollTop = maxScrollTop > 0 ? maxScrollTop : 0;
   }
-  async getMoreMessages() {
+  async getMoreMessages(targetComponent) {
     const roomId = this.props.match.params.id;
     this.setState({
       loadingMore: true
@@ -73,6 +73,7 @@ class ChatBoxContainer extends React.Component {
         method: "GET"
       });
       if (res.data.status === "success") {
+        let prevHeight = targetComponent.scrollHeight;
         await this.setState(prevState => {
           const messages = res.data.value.messages.concat(prevState.messages);
           return {
@@ -82,13 +83,16 @@ class ChatBoxContainer extends React.Component {
             count: res.data.value.count
           };
         });
+        targetComponent.scrollTop = targetComponent.scrollHeight - prevHeight;
       } else {
+        // load more fail
         this.setState({
           loadingMore: false,
           error: res.data.message
         });
       }
     } catch (err) {
+      // load more fail
       this.setState({
         loadingMore: false,
         error: err
