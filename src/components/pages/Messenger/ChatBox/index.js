@@ -4,11 +4,28 @@ import Input from "./Input";
 
 const MessageItem = ({ data }) => {
   return (
-    <div>
-      <span>
-        <b>{data.owner.fullName}: </b>
-      </span>
-      <span> {data.value} </span>
+    <div
+      style={{
+        display: "flex",
+        flexDirection: data.isAuthOwner ? "row-reverse" : "row",
+        margin: "0px 16px"
+      }}
+    >
+      <div style={{}}>
+        <div style={{ display: data.isAuthOwner ? "none" : "block" }}>
+          <b>{data.owner.fullName} </b>
+        </div>
+        <div
+          style={{
+            backgroundColor: data.isAuthOwner ? "#3578E5" : "#f1f0f0",
+            color: data.isAuthOwner ? "white" : "black",
+            padding: 4,
+            margin: "4px 0px"
+          }}
+        >
+          {data.value}
+        </div>
+      </div>
     </div>
   );
 };

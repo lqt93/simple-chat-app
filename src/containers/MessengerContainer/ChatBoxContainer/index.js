@@ -34,6 +34,9 @@ class ChatBoxContainer extends React.Component {
       );
       if (existMsg) return;
 
+      const { authUser } = this.props;
+
+      existMsg.isAuthOwner = existMsg.owner._id === authUser._id;
       // add new messages to list
       await this.setState(prevState => {
         const messages = prevState.messages.concat(msg);
@@ -89,7 +92,11 @@ class ChatBoxContainer extends React.Component {
         let prevHeight = msgContainerElement.scrollHeight;
         // add new messages
         await this.setState(prevState => {
-          const messages = res.data.value.messages.concat(prevState.messages);
+          let messages = res.data.value.messages.concat(prevState.messages);
+          const { authUser } = this.props;
+          messages.map(
+            msg => (msg.isAuthOwner = msg.owner._id === authUser._id)
+          );
           return {
             messages,
             skip: prevState.skip + STEP,
@@ -131,9 +138,15 @@ class ChatBoxContainer extends React.Component {
         method: "GET"
       });
       if (res.data.status === "success") {
+        const { authUser } = this.props;
+        let newMessages = res.data.value.messages.reverse();
+        newMessages.map(msg => {
+          msg.isAuthOwner = authUser._id === msg.owner._id;
+          return msg;
+        });
         await this.setState({
           loadingMessages: false,
-          messages: res.data.value.messages.reverse(),
+          messages: newMessages,
           count: res.data.value.count,
           skip: STEP
         });
@@ -177,6 +190,7 @@ class ChatBoxContainer extends React.Component {
         value: messageValue,
         type: "text",
         owner: owner,
+        isAuthOwner: true,
         timeTicket: timeTicket
       });
       return {
