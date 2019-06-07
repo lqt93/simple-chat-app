@@ -7,6 +7,8 @@ import HomePage from "../HomeContainer";
 import NotFoundPage from "../NotFoundContainer";
 import SigninPage from "../SigninContainer";
 import MessengerPage from "../MessengerContainer";
+// css
+import "./App.css";
 
 const INITIAL_STATE = {
   authUser: null,
