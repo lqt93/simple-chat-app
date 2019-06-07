@@ -1,0 +1,30 @@
+.layout-body section {
+  margin-bottom: 32px;
+}
+
+.public-chat-rooms ul {
+  display: flex;
+  justify-content: flex-start;
+}
+
+.public-chat-rooms li {
+  border: 1px solid black;
+  border-radius: 5px;
+  padding: 16px;
+  margin-right: 16px;
+  cursor: pointer;
+}
+
+.public-chat-rooms li:hover {
+  border-color: gray;
+  background-color: gray;
+}
+
+.public-chat-rooms li:hover a {
+  color: white;
+}
+
+.public-chat-rooms li a {
+  text-decoration: none;
+  color: black;
+}

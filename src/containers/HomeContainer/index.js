@@ -1,6 +1,8 @@
 import React from "react";
 import AuthHomeContainer from "./AuthHomeContainer";
 import PubHomeContainer from "./PubHomeContainer";
+// css
+import "./Home.css";
 
 function HomeContainer(props) {
   return (

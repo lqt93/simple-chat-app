@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 function Header({ authUser, signOut }) {
   return (
     <header>
-      <div className="container">
+      <div className="container container--header">
         <div className="brand">
           <nav>
             <Link to="/">

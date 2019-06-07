@@ -2,12 +2,13 @@ import React from "react";
 import List from "../../../common/List";
 import RoomItem from "./RoomItem";
 
-function AuthHome({ authUser, publicRooms }) {
+function AuthHome({ publicRooms }) {
   return (
     <div>
-      <h3>Welcome {authUser.fullName ? `${authUser.fullName},` : ","}</h3>
-      <hr />
-      <List list={publicRooms} ItemComponent={RoomItem} />
+      <section className="public-chat-rooms">
+        <h3> Explore the public chat rooms: </h3>
+        <List list={publicRooms} ItemComponent={RoomItem} />
+      </section>
     </div>
   );
 }

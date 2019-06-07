@@ -1,3 +1,21 @@
+nav {
+  cursor: pointer;
+  padding: 8px;
+}
+
+.container {
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 16px;
+  padding-right: 16px;
+}
+
+.container--deeper {
+  padding-left: 32px;
+  padding-right: 32px;
+}
+
+/* header */
 header {
   border-bottom: 2px solid black;
 }
@@ -7,15 +25,7 @@ header a {
   color: black;
 }
 
-nav {
-  cursor: pointer;
-  padding: 8px;
-}
-
-header .container {
-  margin-left: auto;
-  margin-right: auto;
-  padding: "0px 15px";
+.container--header {
   display: flex;
   justify-content: space-between;
 }
@@ -28,4 +38,12 @@ header .brand {
 header .navbar {
   display: flex;
   padding: 8px;
+}
+
+/* footer */
+footer {
+  background-color: black;
+  color: white;
+  padding-top: 16px;
+  padding-bottom: 16px;
 }
