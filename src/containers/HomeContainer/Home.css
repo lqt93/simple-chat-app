@@ -20,11 +20,11 @@
   background-color: gray;
 }
 
-.public-chat-rooms li:hover a {
+.public-chat-rooms li:hover {
   color: white;
 }
 
-.public-chat-rooms li a {
+.public-chat-rooms a {
   text-decoration: none;
   color: black;
 }

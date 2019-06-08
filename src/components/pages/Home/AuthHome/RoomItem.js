@@ -3,9 +3,9 @@ import { Link } from "react-router-dom";
 
 function RoomItem({ data }) {
   return (
-    <li>
-      <Link to={`/rooms/${data._id}`}>{data.name}</Link>
-    </li>
+    <Link to={`/rooms/${data._id}`}>
+      <li>{data.name} </li>
+    </Link>
   );
 }
 
