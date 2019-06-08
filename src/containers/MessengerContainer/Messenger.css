@@ -1,0 +1,61 @@
+.chat-box-container {
+  height: 100%;
+}
+.room-controls {
+  height: calc(100% - 39px);
+}
+
+.room-info {
+  border-bottom: solid 2px black;
+  padding: 8px 0px 8px 16px;
+}
+
+.room-controls {
+  display: flex;
+}
+
+.room-controls__col {
+  height: 100%;
+}
+
+.room-controls__col--left {
+  flex: 0 0 50%;
+  max-width: 560px;
+  min-width: 240px;
+}
+
+.room-controls__col--right {
+  border-left: 1px solid rgba(0, 0, 0, 0.2);
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.messages-container {
+  height: calc(100% - 50px);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+  overflow-y: scroll;
+}
+
+.chatbox-form {
+  height: 50px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.chatbox-form__input {
+  width: 80%;
+  height: 34px;
+  border: none;
+}
+
+.chatbox-form__input:focus {
+  outline: none !important;
+}
+
+.chatbox-form__btn {
+  width: 20%;
+  height: 40px;
+}

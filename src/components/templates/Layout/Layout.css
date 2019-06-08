@@ -40,6 +40,11 @@ header .navbar {
   padding: 8px;
 }
 
+/* body */
+.layout-body {
+  height: calc(100% - 55px);
+}
+
 /* footer */
 footer {
   background-color: black;

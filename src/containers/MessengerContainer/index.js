@@ -3,6 +3,8 @@ import { withRouter } from "react-router-dom";
 import ChatBoxContainer from "./ChatBoxContainer";
 import request from "../../utils/request";
 import socket from "../../utils/socket";
+// css
+import "./Messenger.css";
 
 const INITIAL_STATE = {
   roomInfo: null,

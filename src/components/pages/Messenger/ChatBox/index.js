@@ -44,24 +44,28 @@ const ChatBox = React.forwardRef(
     ref
   ) => {
     return (
-      <div>
-        <h3>You are in {roomInfo.name}</h3>
-        <div
-          style={{
-            overflowY: "scroll",
-            height: 500
-          }}
-          ref={ref}
-          onScroll={handleScroll}
-        >
-          {loadingMore && <div style={{ marginLeft: 50 }}>...loading</div>}
-          <List list={messages} ItemComponent={MessageItem} />
+      <div className="chat-box-container">
+        <div className="room-info">
+          <strong>{roomInfo.name}</strong>
         </div>
-        <Input
-          value={currentInput}
-          handleChange={handleChange}
-          submit={submit}
-        />
+        <div className="room-controls">
+          <div className="room-controls__col room-controls__col--left">
+            <div
+              className="messages-container"
+              ref={ref}
+              onScroll={handleScroll}
+            >
+              {loadingMore && <div style={{ marginLeft: 50 }}>...loading</div>}
+              <List list={messages} ItemComponent={MessageItem} />
+            </div>
+            <Input
+              value={currentInput}
+              handleChange={handleChange}
+              submit={submit}
+            />
+          </div>
+          <div className="room-controls__col room-controls__col--right" />
+        </div>
       </div>
     );
   }
