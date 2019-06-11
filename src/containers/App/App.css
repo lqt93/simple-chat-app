@@ -14,3 +14,21 @@ ul {
   margin: 0;
   padding: 0;
 }
+
+button {
+  border: none;
+  padding: 8px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  margin: 8px;
+}
+
+.btn-default {
+  background-color: #dddddd;
+}
+
+.btn-default:hover {
+  background-color: #9c9c9c;
+  color: #dedede;
+}

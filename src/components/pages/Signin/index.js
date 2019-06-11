@@ -1,38 +1,39 @@
 import React from "react";
-import Wrapper from "./Wrapper";
 
 function SigninPage({ handleChange, submit, email, password }) {
   return (
-    <Wrapper>
-      <div>
-        <b>Sign in to Chat app</b>
+    <div className="signin-container">
+      <div className="signin-box">
+        <div className="signin-box__title">
+          <strong>Sign in to SimpleChat</strong>
+        </div>
+        <form className="signin-box__form">
+          <div>
+            <input
+              type="text"
+              name="email"
+              placeholder="Email"
+              value={email}
+              onChange={handleChange}
+            />
+          </div>
+          <div>
+            <input
+              type="password"
+              name="password"
+              placeholder="Password"
+              value={password}
+              onChange={handleChange}
+            />
+          </div>
+          <div>
+            <button className="btn-default" type="submit" onClick={submit}>
+              Sign in
+            </button>
+          </div>
+        </form>
       </div>
-      <form>
-        <div>
-          <input
-            type="text"
-            name="email"
-            placeholder="Email"
-            value={email}
-            onChange={handleChange}
-          />
-        </div>
-        <div>
-          <input
-            type="password"
-            name="password"
-            placeholder="Password"
-            value={password}
-            onChange={handleChange}
-          />
-        </div>
-        <div>
-          <button type="submit" onClick={submit}>
-            Submit
-          </button>
-        </div>
-      </form>
-    </Wrapper>
+    </div>
   );
 }
 

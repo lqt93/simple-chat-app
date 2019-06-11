@@ -1,0 +1,20 @@
+.signin-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 20vh;
+}
+
+.signin-box {
+  width: 250px;
+  text-align: center;
+  padding: 20px;
+  border: 2px solid black;
+  border-radius: 8px;
+}
+.signin-box__title {
+}
+
+.signin-box .signin-box__title,
+input {
+  margin-bottom: 8px;
+}
