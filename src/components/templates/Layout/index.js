@@ -9,7 +9,7 @@ import "./Layout.css";
 function Layout({ children, authUser, signOut, location }) {
   return (
     <div style={{ height: "inherit" }}>
-      <Header authUser={authUser} signOut={signOut} />
+      <Header authUser={authUser} signOut={signOut} location={location} />
       <Body>{children}</Body>
       {!authUser && location.pathname === "/" && <Footer />}
     </div>

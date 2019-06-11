@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
-function Header({ authUser, signOut }) {
+function Header({ authUser, location, signOut }) {
   return (
     <header>
       <div className="container container--header">
@@ -12,19 +12,28 @@ function Header({ authUser, signOut }) {
             </Link>
           </nav>
         </div>
-        <div className="navbar">
-          {!authUser && (
+        {!authUser && location.pathname === "/" && (
+          <div className="navbar">
             <nav>
               <Link to="/signin">Sign in</Link>
             </nav>
-          )}
-          {authUser && (
+          </div>
+        )}
+        {!authUser && location.pathname === "/signin" && (
+          <div className="navbar">
+            <nav>
+              <Link to="/signup">Sign up</Link>
+            </nav>
+          </div>
+        )}
+        {authUser && (
+          <div className="navbar">
             <nav>
               Welcome, <Link> {authUser.fullName} </Link>
             </nav>
-          )}
-          {authUser && <nav onClick={signOut}>Sign out</nav>}
-        </div>
+            <nav onClick={signOut}>Sign out</nav>
+          </div>
+        )}
       </div>
     </header>
   );

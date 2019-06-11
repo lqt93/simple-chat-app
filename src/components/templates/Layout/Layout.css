@@ -22,7 +22,7 @@ header {
 
 header a {
   text-decoration: none;
-  color: black;
+  color: blue;
 }
 
 .container--header {
@@ -33,6 +33,9 @@ header a {
 header .brand {
   min-width: 110px;
   padding: 8px;
+}
+header .brand a {
+  color: black;
 }
 
 header .navbar {

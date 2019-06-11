@@ -1,10 +1,16 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 function PubHome() {
   return (
     <div className="container container--deeper">
-      <h1> Welcome to this Simple Chat App </h1>
-      <h3> Create an account to explore it!!! </h3>
+      <div className="pub-home-container">
+        <h1> Welcome to SimpleChat </h1>
+        <h3>
+          <Link to="/signup">Create your account</Link> to explore our typing
+          world
+        </h3>
+      </div>
     </div>
   );
 }
