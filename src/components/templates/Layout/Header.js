@@ -12,13 +12,14 @@ function Header({ authUser, location, signOut }) {
             </Link>
           </nav>
         </div>
-        {!authUser && location.pathname === "/" && (
-          <div className="navbar">
-            <nav>
-              <Link to="/signin">Sign in</Link>
-            </nav>
-          </div>
-        )}
+        {!authUser &&
+          (location.pathname === "/" || location.pathname === "/signup") && (
+            <div className="navbar">
+              <nav>
+                <Link to="/signin">Sign in</Link>
+              </nav>
+            </div>
+          )}
         {!authUser && location.pathname === "/signin" && (
           <div className="navbar">
             <nav>
@@ -29,7 +30,12 @@ function Header({ authUser, location, signOut }) {
         {authUser && (
           <div className="navbar">
             <nav>
-              Welcome, <Link> {authUser.fullName} </Link>
+              Welcome{" "}
+              <Link>
+                {authUser.fullName && authUser.fullName.indexOf("undefined") < 0
+                  ? authUser.fullName
+                  : authUser.username || authUser.email}
+              </Link>
             </nav>
             <nav onClick={signOut}>Sign out</nav>
           </div>

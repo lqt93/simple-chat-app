@@ -6,6 +6,7 @@ import validateAuth from "../../utils/validateAuth";
 import HomePage from "../HomeContainer";
 import NotFoundPage from "../NotFoundContainer";
 import SigninPage from "../SigninContainer";
+import SignupPage from "../SignupContainer";
 import MessengerPage from "../MessengerContainer";
 // css
 import "./App.css";
@@ -88,6 +89,7 @@ class App extends React.Component {
               validateAuth(authUser)(<MessengerPage authUser={authUser} />)
             }
           />
+          <Route path="/signup" render={props => <SignupPage {...props} />} />
           <Route component={NotFoundPage} />
         </Switch>
       </Layout>
