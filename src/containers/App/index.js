@@ -84,7 +84,7 @@ class App extends React.Component {
             )}
           />
           <Route
-            path="/rooms/:id"
+            path="/messages/:id"
             render={props =>
               validateAuth(authUser)(<MessengerPage authUser={authUser} />)
             }
