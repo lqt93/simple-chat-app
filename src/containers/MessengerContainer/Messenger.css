@@ -1,41 +1,50 @@
 .chat-box-container {
   height: 100%;
+  display: flex;
 }
-.room-controls {
-  height: calc(100% - 39px);
+
+.msg-list-container {
+  height: 100%;
+  width: 25%;
+  border-right: 1px solid rgba(0, 0, 0, 0.2);
+}
+
+.msg-list-settings {
+  padding: 8px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+}
+
+.room-container {
+  height: 100%;
+  width: 75%;
 }
 
 .room-info {
-  border-bottom: solid 2px black;
-  padding: 8px 0px 8px 16px;
+  padding: 8px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.2);
 }
 
-.room-controls {
+.room-details {
+  height: calc(100% - 38px);
   display: flex;
 }
 
-.room-controls__col {
+.room-details__messages {
   height: 100%;
+  width: 70%;
 }
 
-.room-controls__col--left {
-  flex: 0 0 50%;
-  max-width: 560px;
-  min-width: 240px;
-}
-
-.room-controls__col--right {
+.room-details__settings {
+  height: 100%;
+  width: 30%;
   border-left: 1px solid rgba(0, 0, 0, 0.2);
-  display: flex;
-  flex: 1;
-  flex-direction: column;
-  min-width: 0;
 }
 
 .messages-container {
-  height: calc(100% - 50px);
-  border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+  height: calc(100% - 51px);
+  width: 100%;
   overflow-y: scroll;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.2);
 }
 
 .chatbox-form {
@@ -60,4 +69,5 @@
 .chatbox-form__btn {
   width: 20%;
   height: 40px;
+  margin: 0px;
 }

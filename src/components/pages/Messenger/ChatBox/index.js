@@ -1,34 +1,7 @@
 import React from "react";
 import List from "../../../common/List";
 import Input from "./Input";
-
-const MessageItem = ({ data }) => {
-  return (
-    <div
-      style={{
-        display: "flex",
-        flexDirection: data.isAuthOwner ? "row-reverse" : "row",
-        margin: "0px 16px"
-      }}
-    >
-      <div style={{}}>
-        <div style={{ display: data.isAuthOwner ? "none" : "block" }}>
-          <b>{data.owner.fullName} </b>
-        </div>
-        <div
-          style={{
-            backgroundColor: data.isAuthOwner ? "#3578E5" : "#f1f0f0",
-            color: data.isAuthOwner ? "white" : "black",
-            padding: 4,
-            margin: "4px 0px"
-          }}
-        >
-          {data.value}
-        </div>
-      </div>
-    </div>
-  );
-};
+import MessageItem from "./MessageItem";
 
 const ChatBox = React.forwardRef(
   (
@@ -45,26 +18,41 @@ const ChatBox = React.forwardRef(
   ) => {
     return (
       <div className="chat-box-container">
-        <div className="room-info">
-          <strong>{roomInfo.name}</strong>
+        <div className="msg-list-container">
+          <div className="msg-list-settings"> Settings </div>
         </div>
-        <div className="room-controls">
-          <div className="room-controls__col room-controls__col--left">
-            <div
-              className="messages-container"
-              ref={ref}
-              onScroll={handleScroll}
-            >
-              {loadingMore && <div style={{ marginLeft: 50 }}>...loading</div>}
-              <List list={messages} ItemComponent={MessageItem} />
-            </div>
-            <Input
-              value={currentInput}
-              handleChange={handleChange}
-              submit={submit}
-            />
+        <div className="room-container">
+          <div className="room-info">
+            <strong>{roomInfo.name}</strong>
           </div>
-          <div className="room-controls__col room-controls__col--right" />
+          <div className="room-details">
+            <div className="room-details__messages">
+              <div
+                className="messages-container"
+                ref={ref}
+                onScroll={handleScroll}
+              >
+                {loadingMore && (
+                  <div style={{ marginLeft: 50 }}>...loading</div>
+                )}
+                <List
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    padding: 16
+                  }}
+                  list={messages}
+                  ItemComponent={MessageItem}
+                />
+              </div>
+              <Input
+                value={currentInput}
+                handleChange={handleChange}
+                submit={submit}
+              />
+            </div>
+            <div className="room-details__settings" />
+          </div>
         </div>
       </div>
     );

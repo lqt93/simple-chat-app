@@ -1,8 +1,8 @@
 import React from "react";
 
-function List({ list, ItemComponent }) {
+function List({ list, ItemComponent, style }) {
   return (
-    <ul>
+    <ul style={style}>
       {list &&
         list.length > 0 &&
         list.map((item, index) => {
