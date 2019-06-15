@@ -9,18 +9,25 @@
   border: solid 2px black;
   border-radius: 5px;
   padding: 16px;
-  display: flex;
-  flex-direction: column;
 }
 
 .signup-form__row {
   margin-bottom: 16px;
 }
 
-.signup-form__grid {
-  display: grid;
-  grid-template-columns: 4fr 6fr;
-  gap: 8px;
+.signup-form__fields {
+  max-width: 350px;
+}
+
+.field-row {
+  margin-bottom: 8px;
+}
+
+.signup-form__fields input {
+  width: calc(100% - 22px);
+  border-radius: 3px;
+  border: 1px solid;
+  padding: 8px 10px;
 }
 
 .error-msg {

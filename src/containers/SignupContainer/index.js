@@ -14,6 +14,8 @@ const INITIAL_STATE = {
 
 const requiredFields = {
   username: "Username",
+  firstName: "First name",
+  lastName: "Last name",
   email: "Email",
   password: "Password",
   retypePassword: "Re-type password"

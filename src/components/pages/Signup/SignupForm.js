@@ -11,25 +11,46 @@ function SignupForm({
 }) {
   return (
     <form className="signup-form" onSubmit={submitNewUser}>
-      <div className="signup-form__row txt-center">
+      <div className="field-row txt-center">
         <strong>Register your account</strong>
       </div>
-      <div className="signup-form__row signup-form__grid">
-        <label>Username</label>
-        <div>
-          <input value={username} name="username" />
+      <div className="signup-form__fields">
+        <div className="field-row">
+          <input
+            defaultValue={username}
+            name="username"
+            placeholder="Username"
+          />
         </div>
-        <label>Email</label>
-        <div>
-          <input value={email} name="email" />
+        <div
+          className="field-row"
+          style={{ display: "flex", justifyContent: "space-between" }}
+        >
+          <div style={{ width: "48%" }}>
+            <input name="firstName" placeholder="First name" />
+          </div>
+          <div style={{ width: "48%" }}>
+            <input name="lastName" placeholder="Last name" />
+          </div>
         </div>
-        <label>Password</label>
-        <div>
-          <input value={password} name="password" type="password" />
+        <div className="field-row">
+          <input defaultValue={email} name="email" placeholder="Email" />
         </div>
-        <label>Re-type Password</label>
-        <div>
-          <input value={retypePassword} name="retypePassword" type="password" />
+        <div className="field-row">
+          <input
+            defaultValue={password}
+            name="password"
+            type="password"
+            placeholder="Password"
+          />
+        </div>
+        <div className="field-row">
+          <input
+            defaultValue={retypePassword}
+            name="retypePassword"
+            type="password"
+            placeholder="Re-type password"
+          />
         </div>
       </div>
       <div className="txt-center">
