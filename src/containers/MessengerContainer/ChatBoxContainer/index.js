@@ -1,7 +1,7 @@
 import React from "react";
 import ChatBox from "../../../components/pages/Messenger/ChatBox";
 import request from "../../../utils/request";
-import socket from "../../../utils/socket";
+import { socket } from "../../../utils/socket";
 
 const INITIAL_STATE = {
   messages: null,
@@ -21,42 +21,63 @@ class ChatBoxContainer extends React.PureComponent {
   };
   componentDidMount() {
     this.msgContainerRef = React.createRef();
+    // get current messages in room
     this.getMessages();
-    this.handleIncomingMessages();
   }
-  handleIncomingMessages() {
-    // handle incoming messages through socket's io
-    socket.on("room_msg", async msg => {
-      console.log("received msg:", msg);
-      // look up in current msg list to check if incoming msg is exist or not
-      const existMsg = await this.state.messages.find(
-        item => item.timeTicket === msg.timeTicket
-      );
-      if (existMsg) return;
+  componentWillUnmount() {
+    // remove socket's listener that handle incoming msg
+    socket.removeListener("room_msg", this.handleIncomingMessages);
+  }
+  componentWillReceiveProps(nextProps) {
+    if (
+      this.props.socketLoaded !== nextProps.socketLoaded &&
+      nextProps.socketLoaded === true
+    ) {
+      // handle incoming messages through socket's io
+      socket.on("room_msg", this.handleIncomingMessages);
+    }
+  }
+  handleIncomingMessages = async msg => {
+    console.log("received msg:", msg);
+    // look up in current msg list to check if incoming msg is exist or not
+    const existMsg = await this.state.messages.find(
+      item => item.timeTicket === msg.timeTicket
+    );
+    if (existMsg) return;
 
-      // add new messages to list
-      await this.setState(prevState => {
-        const messages = prevState.messages.concat(msg);
-        return {
-          messages
-        };
-      });
+    // check incoming msg is belonged to current authUser or not
+    const { authUser } = this.props;
+    msg.isAuthOwner = authUser._id === msg.owner._id;
 
-      // scroll to bottom to show new messages
-      this.scrollToBottom();
+    // add new messages to list
+    await this.setState(prevState => {
+      const messages = prevState.messages.concat(msg);
+      return {
+        messages
+      };
     });
-  }
+
+    // scroll to bottom to show new messages
+    this.scrollToBottom();
+  };
   handleScroll = () => {
     const msgContainerElement = this.msgContainerRef.current;
+
+    // load more previous messages when:
+    // + if scroll to the top of the msg_container
+    // + if number of messages in msg_container is less than total messages in room
+    // (!): scrollTop is the position of the scrollBar
     if (
       msgContainerElement.scrollTop === 0 &&
       !this.state.loadingMore &&
       this.state.count > this.state.messages.length
     ) {
+      // load previous messages
       this.getMoreMessages(msgContainerElement);
     }
   };
   scrollToBottom() {
+    // does not exec function when ref has not created
     if (!this.msgContainerRef || !this.msgContainerRef.current) return;
     const msgContainerElement = this.msgContainerRef.current;
     const scrollHeight = msgContainerElement.scrollHeight;
@@ -83,19 +104,20 @@ class ChatBoxContainer extends React.PureComponent {
         url: `/rooms/${roomId}/messages${query}`,
         method: "GET"
       });
-      console.log("get more ", res.data);
       if (res.data.status === "success") {
         // load more data success
         // get height of msgContainer before adding new messages
         let prevHeight = msgContainerElement.scrollHeight;
-        // add new messages
+        // add new messages to state
         await this.setState(prevState => {
           const { authUser } = this.props;
           let newMessages = res.data.value.messages;
+          // check owner of all new messages
           newMessages = newMessages.map(msg => {
             msg.isAuthOwner = authUser._id === msg.owner._id;
             return msg;
           });
+          // create new messages list
           let messages = newMessages.concat(prevState.messages);
           return {
             messages,
@@ -193,7 +215,6 @@ class ChatBoxContainer extends React.PureComponent {
         isAuthOwner: true,
         timeTicket: timeTicket
       });
-      console.log("last submit", messages[messages.length - 1]);
       return {
         messages,
         currentInput: ""

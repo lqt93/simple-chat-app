@@ -2,7 +2,7 @@ import React from "react";
 import { withRouter } from "react-router-dom";
 import ChatBoxContainer from "./ChatBoxContainer";
 import request from "../../utils/request";
-import socket from "../../utils/socket";
+import { socket, connectSocket, disconnectSocket } from "../../utils/socket";
 // css
 import "./Messenger.css";
 
@@ -11,14 +11,23 @@ const INITIAL_STATE = {
   loadingInfo: false
 };
 
-class MessengerContainer extends React.Component {
+class MessengerContainer extends React.PureComponent {
   state = {
     ...INITIAL_STATE
   };
   async componentDidMount() {
     await this.getRoomBasicInfo();
-    const id = this.state.roomInfo._id;
-    socket.emit("join_room", id);
+    const roomId = this.props.match.params.id;
+    await connectSocket();
+    socket.emit("join_room", roomId);
+    this.setState({
+      socketLoaded: true
+    });
+  }
+  componentWillUnmount() {
+    const roomId = this.props.match.params.id;
+    socket.emit("leave_room", roomId);
+    disconnectSocket();
   }
   async getRoomBasicInfo() {
     const roomId = this.props.match.params.id;
@@ -55,11 +64,7 @@ class MessengerContainer extends React.Component {
     const { roomInfo } = this.state;
     if (!roomInfo) return <div />;
     return (
-      <ChatBoxContainer
-        roomInfo={roomInfo}
-        {...this.props}
-        authUser={authUser}
-      />
+      <ChatBoxContainer {...this.state} {...this.props} authUser={authUser} />
     );
   }
 }
