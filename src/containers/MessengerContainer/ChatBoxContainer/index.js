@@ -83,6 +83,7 @@ class ChatBoxContainer extends React.PureComponent {
         url: `/rooms/${roomId}/messages${query}`,
         method: "GET"
       });
+      console.log("get more ", res.data);
       if (res.data.status === "success") {
         // load more data success
         // get height of msgContainer before adding new messages
@@ -91,9 +92,10 @@ class ChatBoxContainer extends React.PureComponent {
         await this.setState(prevState => {
           const { authUser } = this.props;
           let newMessages = res.data.value.messages;
-          newMessages = newMessages.map(
-            msg => (msg.isAuthOwner = msg.owner._id === authUser._id)
-          );
+          newMessages = newMessages.map(msg => {
+            msg.isAuthOwner = authUser._id === msg.owner._id;
+            return msg;
+          });
           let messages = newMessages.concat(prevState.messages);
           return {
             messages,

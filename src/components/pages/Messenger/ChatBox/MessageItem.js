@@ -30,4 +30,13 @@ const MessageItem = ({ data }) => {
   );
 };
 
+MessageItem.defaultProps = {
+  data: {
+    owner: {
+      fullName: "Default User"
+    },
+    value: "text"
+  }
+};
+
 export default MessageItem;
