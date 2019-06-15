@@ -15,7 +15,7 @@ const INITIAL_STATE = {
 // the number of messages that will be loaded each time
 const STEP = 30;
 
-class ChatBoxContainer extends React.Component {
+class ChatBoxContainer extends React.PureComponent {
   state = {
     ...INITIAL_STATE
   };
@@ -29,14 +29,11 @@ class ChatBoxContainer extends React.Component {
     socket.on("room_msg", async msg => {
       console.log("received msg:", msg);
       // look up in current msg list to check if incoming msg is exist or not
-      const existMsg = this.state.messages.find(
+      const existMsg = await this.state.messages.find(
         item => item.timeTicket === msg.timeTicket
       );
       if (existMsg) return;
 
-      const { authUser } = this.props;
-
-      existMsg.isAuthOwner = existMsg.owner._id === authUser._id;
       // add new messages to list
       await this.setState(prevState => {
         const messages = prevState.messages.concat(msg);
@@ -92,11 +89,12 @@ class ChatBoxContainer extends React.Component {
         let prevHeight = msgContainerElement.scrollHeight;
         // add new messages
         await this.setState(prevState => {
-          let messages = res.data.value.messages.concat(prevState.messages);
           const { authUser } = this.props;
-          messages.map(
+          let newMessages = res.data.value.messages;
+          newMessages = newMessages.map(
             msg => (msg.isAuthOwner = msg.owner._id === authUser._id)
           );
+          let messages = newMessages.concat(prevState.messages);
           return {
             messages,
             skip: prevState.skip + STEP,
@@ -193,6 +191,7 @@ class ChatBoxContainer extends React.Component {
         isAuthOwner: true,
         timeTicket: timeTicket
       });
+      console.log("last submit", messages[messages.length - 1]);
       return {
         messages,
         currentInput: ""
