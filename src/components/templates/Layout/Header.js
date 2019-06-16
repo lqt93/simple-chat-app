@@ -31,7 +31,7 @@ function Header({ authUser, location, signOut }) {
           <div className="navbar">
             <nav>
               Welcome{" "}
-              <Link>
+              <Link to="/settings">
                 {authUser.fullName && authUser.fullName.indexOf("undefined") < 0
                   ? authUser.fullName
                   : authUser.username || authUser.email}

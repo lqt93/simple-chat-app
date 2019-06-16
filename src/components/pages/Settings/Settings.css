@@ -1,0 +1,56 @@
+.settings-wrapper {
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.settings-container {
+  border: 1px solid black;
+  border-radius: 5px;
+  display: flex;
+}
+
+.settings-menu {
+  border-right: 1px solid black;
+}
+
+.settings-menu a {
+  text-decoration: none;
+  color: black;
+}
+
+.settings-menu__item {
+  border-bottom: 1px solid black;
+}
+
+.settings-menu__item--last {
+  border-bottom: none;
+}
+
+.menu-item-container {
+  padding: 16px;
+}
+
+.menu-item-container:hover {
+  background-color: aliceblue;
+}
+
+.menu-item-container--chosen,
+.menu-item-container--chosen:hover {
+  background-color: #76b3e8;
+}
+
+.menu-item-container--last,
+.menu-item-container--last:hover {
+  border-bottom-left-radius: 4px;
+}
+
+.menu-item-container--first,
+.menu-item-container--first:hover {
+  border-top-left-radius: 4px;
+}
+
+.settings-tab-container {
+  padding: 16px;
+}

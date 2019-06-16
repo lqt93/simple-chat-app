@@ -48,6 +48,10 @@ header .navbar {
   height: calc(100% - 55px);
 }
 
+.layout-body section {
+  margin-bottom: 32px;
+}
+
 /* footer */
 footer {
   background-color: black;

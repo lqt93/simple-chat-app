@@ -7,10 +7,6 @@
 }
 
 /* auth home layout */
-.layout-body section {
-  margin-bottom: 32px;
-}
-
 .public-chat-rooms ul {
   display: flex;
   justify-content: flex-start;

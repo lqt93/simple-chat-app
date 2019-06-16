@@ -1,6 +1,6 @@
 import React from "react";
 
-function List({ list, ItemComponent, style }) {
+function List({ list, ItemComponent, style, ...rest }) {
   return (
     <ul style={style}>
       {list &&
@@ -9,7 +9,10 @@ function List({ list, ItemComponent, style }) {
           return (
             <ItemComponent
               key={`${item.id || item._id}-${index}`}
+              isFirst={index === 0}
+              isLast={index === list.length - 1}
               data={item}
+              {...rest}
             />
           );
         })}

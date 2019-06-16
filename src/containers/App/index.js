@@ -8,6 +8,7 @@ import NotFoundPage from "../NotFoundContainer";
 import SigninPage from "../SigninContainer";
 import SignupPage from "../SignupContainer";
 import MessengerPage from "../MessengerContainer";
+import SettingsPage from "../SettingContainer";
 // css
 import "./App.css";
 
@@ -82,6 +83,14 @@ class App extends React.Component {
                 signOut={this.signOut}
               />
             )}
+          />
+          <Route
+            path="/settings"
+            render={props =>
+              validateAuth(authUser)(
+                <SettingsPage {...props} authUser={authUser} />
+              )
+            }
           />
           <Route
             path="/messages/:id"
