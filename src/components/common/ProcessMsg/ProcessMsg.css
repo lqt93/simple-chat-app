@@ -1,0 +1,14 @@
+.process-msg {
+}
+
+.process-msg__item {
+  text-align: center;
+}
+
+.process-msg__error {
+  color: red;
+}
+
+.process-msg__success {
+  color: green;
+}

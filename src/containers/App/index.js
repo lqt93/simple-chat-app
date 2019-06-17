@@ -28,6 +28,12 @@ class App extends React.Component {
     }
   }
   setAuthValue = (field, val) => {
+    if (field === "authUser" || field === "token") {
+      localStorage.setItem(
+        field,
+        field === "authUser" ? JSON.stringify(val) : val
+      );
+    }
     this.setState({ [field]: val });
   };
   async validateCurrentUser() {
@@ -88,7 +94,11 @@ class App extends React.Component {
             path="/settings"
             render={props =>
               validateAuth(authUser)(
-                <SettingsPage {...props} authUser={authUser} />
+                <SettingsPage
+                  {...props}
+                  authUser={authUser}
+                  setAuthValue={this.setAuthValue}
+                />
               )
             }
           />

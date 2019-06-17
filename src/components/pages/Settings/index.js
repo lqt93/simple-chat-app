@@ -3,13 +3,15 @@ import Menu from "./Menu";
 import ProfileInfo from "./ProfileInfo";
 import "./Settings.css";
 
-function SettingPage({ currentTab }) {
+function SettingPage({ currentTab, authUser, setAuthValue }) {
   return (
     <div className="settings-wrapper">
       <div className="settings-container">
         <Menu currentTab={currentTab} />
         <div className="settings-tab-container">
-          <ProfileInfo />
+          {currentTab === "Profile" && (
+            <ProfileInfo authUser={authUser} setAuthValue={setAuthValue} />
+          )}
         </div>
       </div>
     </div>

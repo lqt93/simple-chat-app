@@ -41,8 +41,6 @@ class SigninContainer extends React.Component {
       if (res.data.status === "success") {
         const recUser = res.data.value.user || null;
         const recToken = res.data.value.token || null;
-        localStorage.setItem("authUser", JSON.stringify(recUser));
-        localStorage.setItem("token", recToken);
         await this.props.setAuthValue("authUser", recUser);
         await this.props.setAuthValue("token", recToken);
         await this.setState({

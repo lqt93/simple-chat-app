@@ -30,7 +30,7 @@ class SettingContainer extends React.PureComponent {
     }
   }
   render() {
-    return <SettingPage {...this.state} />;
+    return <SettingPage {...this.state} {...this.props} />;
   }
 }
 

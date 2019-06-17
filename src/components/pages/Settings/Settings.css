@@ -52,5 +52,25 @@
 }
 
 .settings-tab-container {
+  min-width: 353px;
+  min-height: 241px;
   padding: 16px;
+}
+
+.profile-form {
+  padding: 16px;
+}
+
+.profile-form__row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.profile-form__row label {
+  margin-right: 16px;
+}
+
+.profile-form__row input {
+  padding: 8px;
 }
