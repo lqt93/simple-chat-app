@@ -74,3 +74,13 @@
 .profile-form__row input {
   padding: 8px;
 }
+
+.security-form__row {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 16px;
+}
+
+.security-form__row label {
+  margin-bottom: 8px;
+}
