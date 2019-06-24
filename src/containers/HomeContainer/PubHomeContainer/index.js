@@ -1,10 +1,4 @@
-import React from "react";
-import PubHomePage from "../../../components/pages/Home/PubHome";
+import PubHomePage from "./components/PubHome";
+import withPubHomeHandler from "./handlers/withPubHome";
 
-class PubHomeContainer extends React.Component {
-  render() {
-    return <PubHomePage {...this.props} />;
-  }
-}
-
-export default PubHomeContainer;
+export default withPubHomeHandler(PubHomePage);
