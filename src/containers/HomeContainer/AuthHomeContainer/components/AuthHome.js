@@ -1,5 +1,5 @@
 import React from "react";
-import List from "../../../common/List";
+import List from "../../../../components/common/List";
 import RoomItem from "./RoomItem";
 
 function AuthHome({ publicRooms }) {
