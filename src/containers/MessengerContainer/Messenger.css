@@ -22,6 +22,7 @@
 .room-info {
   padding: 8px;
   border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+  min-height: 21px;
 }
 
 .room-details {
