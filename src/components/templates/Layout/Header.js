@@ -15,16 +15,20 @@ function Header({ authUser, location, signOut }) {
         {!authUser &&
           (location.pathname === "/" || location.pathname === "/signup") && (
             <div className="navbar">
-              <nav>
-                <Link to="/signin">Sign in</Link>
-              </nav>
+              <Link to="/signin">
+                <button className="btn-outlined--primary">
+                  <strong>Sign in</strong>
+                </button>
+              </Link>
             </div>
           )}
         {!authUser && location.pathname === "/signin" && (
           <div className="navbar">
-            <nav>
-              <Link to="/signup">Sign up</Link>
-            </nav>
+            <Link to="/signup">
+              <button className="btn-sub">
+                <strong>Sign up</strong>
+              </button>
+            </Link>
           </div>
         )}
         {authUser && (

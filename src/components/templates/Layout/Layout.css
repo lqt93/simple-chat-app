@@ -17,12 +17,11 @@ nav {
 
 /* header */
 header {
-  border-bottom: 2px solid black;
+  background-color: var(--primary-color);
 }
 
 header a {
   text-decoration: none;
-  color: blue;
 }
 
 .container--header {
@@ -31,16 +30,30 @@ header a {
 }
 
 header .brand {
+  display: flex;
+  align-items: center;
   min-width: 110px;
   padding: 8px;
 }
 header .brand a {
-  color: black;
+  color: white;
+  text-decoration: none;
 }
 
 header .navbar {
   display: flex;
   padding: 8px;
+}
+
+header .btn-sub {
+  background-color: var(--primary-light-color);
+  color: white;
+  height: 36px;
+}
+
+header .btn-sub:hover {
+  background-color: #00b89c;
+  color: white;
 }
 
 /* body */

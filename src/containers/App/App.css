@@ -7,6 +7,9 @@ body,
 body {
   font-size: 18px;
   margin: 0px;
+  font-family: BlinkMacSystemFont, -apple-system, "Segoe UI", Roboto, Oxygen,
+    Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", Helvetica,
+    Arial, sans-serif;
 }
 
 ul {
@@ -28,6 +31,10 @@ button {
   margin: 8px;
 }
 
+button a {
+  text-decoration: none;
+}
+
 .btn-default {
   background-color: #dddddd;
 }
@@ -39,4 +46,21 @@ button {
 
 .btn-disabled {
   pointer-events: none;
+}
+
+.btn-outlined--primary {
+  color: white;
+  background-color: transparent;
+  border: 2px solid var(--primary-light-color);
+}
+
+.btn-outlined--primary:hover {
+  color: var(--primary-light-color);
+  background-color: transparent;
+  border: 2px solid white;
+}
+
+:root {
+  --primary-color: #00a996;
+  --primary-light-color: #00d1b2;
 }
