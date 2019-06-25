@@ -106,7 +106,9 @@ class App extends React.Component {
           <Route
             path="/messages/:id"
             render={props =>
-              validateAuth(authUser)(<MessengerPage authUser={authUser} />)
+              validateAuth(authUser)(
+                <MessengerPage authUser={authUser} {...props} />
+              )
             }
           />
           <Route path="/signup" render={props => <SignupPage {...props} />} />
