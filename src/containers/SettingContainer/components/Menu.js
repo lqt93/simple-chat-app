@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import List from "../../common/List";
+import List from "../../../components/common/List";
 
 const menuList = [
   { name: "Profile", path: "/settings?tab=profile" },

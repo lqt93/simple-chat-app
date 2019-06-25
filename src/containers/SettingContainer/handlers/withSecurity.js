@@ -13,8 +13,8 @@ const INITIAL_STATE = {
   error: null
 };
 
-const withSecurityModifier = Security =>
-  class SecurityModifier extends React.PureComponent {
+const withSecurityHandler = Security =>
+  class SecurityHandler extends React.PureComponent {
     state = { ...INITIAL_STATE };
     onSubmit = async e => {
       e.preventDefault();
@@ -76,4 +76,4 @@ const withSecurityModifier = Security =>
     }
   };
 
-export default withSecurityModifier;
+export default withSecurityHandler;

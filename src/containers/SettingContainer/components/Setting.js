@@ -1,8 +1,8 @@
 import React from "react";
+// components
 import Menu from "./Menu";
 import ProfileInfo from "./ProfileInfo";
 import Security from "./Security";
-import "./Settings.css";
 
 function SettingPage({ currentTab, authUser, setAuthValue }) {
   return (

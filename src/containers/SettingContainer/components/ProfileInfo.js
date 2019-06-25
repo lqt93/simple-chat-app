@@ -1,5 +1,5 @@
 import React from "react";
-import withProfileEditor from "./withProfileEditor";
+import withProfileHandler from "../handlers/withProfile";
 import ProcessMsg from "../../../components/common/ProcessMsg";
 
 function ProfileInfo({ authUser, isSaving, onSubmit, error, success }) {
@@ -31,4 +31,4 @@ function ProfileInfo({ authUser, isSaving, onSubmit, error, success }) {
   );
 }
 
-export default withProfileEditor(ProfileInfo);
+export default withProfileHandler(ProfileInfo);

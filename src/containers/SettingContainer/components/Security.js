@@ -1,6 +1,6 @@
 import React from "react";
 import ProcessMsg from "../../../components/common/ProcessMsg";
-import withSecurityModifier from "./withSecurityModifier";
+import withSecurityHandler from "../handlers/withSecurity";
 
 const Security = ({ onSubmit, error, success, isSaving }) => {
   return (
@@ -31,4 +31,4 @@ const Security = ({ onSubmit, error, success, isSaving }) => {
   );
 };
 
-export default withSecurityModifier(Security);
+export default withSecurityHandler(Security);

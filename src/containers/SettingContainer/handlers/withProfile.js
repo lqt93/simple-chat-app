@@ -9,8 +9,8 @@ const INITIAL_STATE = {
   error: null
 };
 
-const withProfileEditor = ProfileInfo =>
-  class ProfileEditor extends React.PureComponent {
+const withProfileHandler = ProfileInfo =>
+  class ProfileHandler extends React.PureComponent {
     state = { ...INITIAL_STATE };
     onSubmit = async e => {
       e.preventDefault();
@@ -60,4 +60,4 @@ const withProfileEditor = ProfileInfo =>
     }
   };
 
-export default withProfileEditor;
+export default withProfileHandler;
