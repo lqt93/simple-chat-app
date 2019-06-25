@@ -87,6 +87,7 @@ class App extends React.Component {
               <SigninPage
                 setAuthValue={this.setAuthValue}
                 signOut={this.signOut}
+                {...props}
               />
             )}
           />
