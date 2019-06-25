@@ -1,7 +1,8 @@
 import React from "react";
 import ChatBox from "./ChatBox";
 
-const Messenger = ({ roomInfo, ...rest }) => {
+const Messenger = props => {
+  const { roomInfo } = props;
   return (
     <div className="chat-box-container">
       <div className="msg-list-container">
@@ -12,7 +13,7 @@ const Messenger = ({ roomInfo, ...rest }) => {
           <strong>{roomInfo.name}</strong>
         </div>
         <div className="room-details">
-          <ChatBox {...rest} />
+          <ChatBox {...props} />
           <div className="room-details__settings" />
         </div>
       </div>
