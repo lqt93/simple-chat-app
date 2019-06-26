@@ -1,12 +1,20 @@
 import React from "react";
 import { Redirect } from "react-router";
 
-function validateAuth(authUser) {
+function validateAuth(isLoggedIn, isPrivate) {
   return function(Component) {
-    if (authUser) {
-      return Component;
+    if (isPrivate) {
+      if (isLoggedIn) {
+        return Component;
+      } else {
+        return <Redirect to="/signin" />;
+      }
     } else {
-      return <Redirect to="/signin" />;
+      if (!isLoggedIn) {
+        return Component;
+      } else {
+        return <Redirect to="/" />;
+      }
     }
   };
 }

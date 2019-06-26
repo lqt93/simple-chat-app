@@ -10,9 +10,16 @@ const INITIAL_STATE = {
 
 const withSigninHandler = SigninPage =>
   class SigninHandler extends React.PureComponent {
+    _isMounted = false;
     state = {
       ...INITIAL_STATE
     };
+    componentDidMount() {
+      this._isMounted = true;
+    }
+    componentWillUnmount() {
+      this._isMounted = false;
+    }
     handleChange = e => {
       e.persist();
       this.setState({
@@ -38,23 +45,25 @@ const withSigninHandler = SigninPage =>
         if (res.data.status === "success") {
           const recUser = res.data.value.user || null;
           const recToken = res.data.value.token || null;
-          await this.props.setAuthValue("authUser", recUser);
-          await this.props.setAuthValue("token", recToken);
-          await this.setState({
-            ...INITIAL_STATE
-          });
+          await this.props.setAuthValue({ authUser: recUser, token: recToken });
+          if (this._isMounted)
+            this.setState({
+              ...INITIAL_STATE
+            });
           this.props.history.push("/");
         } else {
-          this.setState({
-            loading: false,
-            error: res.data.message
-          });
+          if (this._isMounted)
+            this.setState({
+              loading: false,
+              error: res.data.message
+            });
         }
       } catch (err) {
-        this.setState({
-          loading: false,
-          error: err
-        });
+        if (this._isMounted)
+          this.setState({
+            loading: false,
+            error: err
+          });
         console.log("err", err);
       }
     };

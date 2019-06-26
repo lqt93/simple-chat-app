@@ -35,7 +35,7 @@ const withProfileHandler = ProfileInfo =>
         });
         if (response.status === 200 && response.data.status === "success") {
           this.saveSuccess("Saved");
-          this.props.setAuthValue("authUser", response.data.value);
+          this.props.setAuthValue({ authUser: response.data.value });
         }
       } catch (err) {
         this.setError(err.response.data.message);
