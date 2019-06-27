@@ -1,6 +1,7 @@
 import React from "react";
 import List from "../../../../components/common/List";
 import RoomItem from "./RoomItem";
+import FriendFinder from "./FriendFinder";
 
 function AuthHome({ publicRooms }) {
   return (
@@ -9,6 +10,7 @@ function AuthHome({ publicRooms }) {
         <h3> Explore the public chat rooms: </h3>
         <List list={publicRooms} ItemComponent={RoomItem} />
       </section>
+      <FriendFinder />
     </div>
   );
 }

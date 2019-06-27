@@ -1,4 +1,5 @@
 import React from "react";
+import Button from "@material-ui/core/Button";
 
 function SigninPage({ handleChange, submit, email, password }) {
   return (
@@ -27,9 +28,14 @@ function SigninPage({ handleChange, submit, email, password }) {
             />
           </div>
           <div>
-            <button className="btn-default" type="submit" onClick={submit}>
+            <Button
+              type="submit"
+              onClick={submit}
+              variant="contained"
+              color="primary"
+            >
               Sign in
-            </button>
+            </Button>
           </div>
         </form>
       </div>
