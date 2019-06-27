@@ -82,10 +82,7 @@ const withFriendFinderHandler = FriendFinder =>
             } else {
               const res = await request({
                 url: `/friendships/${friend.friendship}`,
-                method: "PUT",
-                data: {
-                  status: status
-                }
+                method: "DELETE"
               });
             }
             friend.isRequested = status === "waiting";
