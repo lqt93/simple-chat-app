@@ -13,14 +13,14 @@ const withFriendRequestHandler = FriendRequest =>
 
     componentDidMount() {
       this._isMounted = true;
-      this.getFriends();
+      this.getFriendRequests();
     }
 
     componentWillUnmount() {
       this._isMounted = false;
     }
 
-    getFriends = async () => {
+    getFriendRequests = async () => {
       this.setMountedState({ isLoading: true });
       try {
         const res = await request({
@@ -42,45 +42,45 @@ const withFriendRequestHandler = FriendRequest =>
     accceptFriendRequest = id => async () => {
       await this.setLoadingItem(id);
       try {
-        const friends = this.state.friends;
-        const promises = friends.map(async friend => {
-          if (friend._id === id) {
-            const res = await request({
-              url: `/friendships/${id}`,
-              method: "PUT",
-              data: {
-                friendId: friend._id,
-                status: "linked"
-              }
-            });
-            return null;
+        let friends = this.state.friends;
+        const res = await request({
+          url: `/friendships/${id}`,
+          method: "PUT",
+          data: {
+            status: "linked"
           }
-          return friend;
         });
-        let result = Promise.all(promises);
-        result = result.filter(item => item !== null);
-        this.setMountedState({ friends: result });
+        friends = friends
+          .map(friend => {
+            if (friend._id === id) {
+              return null;
+            } else return friend;
+          })
+          .filter(item => item !== null);
+        this.setMountedState({ friends });
+        this.props.getFriendList();
       } catch (error) {}
     };
 
     deleteRequest = id => async () => {
       await this.setLoadingItem(id);
       try {
-        const friends = this.state.friends;
-        const promises = friends.map(async friend => {
-          if (friend._id === id) {
-            const res = await request({
-              url: `/friendships/${id}`,
-              method: "DELETE"
-            });
-            return null;
-          }
-          return friend;
+        const res = await request({
+          url: `/friendships/${id}`,
+          method: "DELETE"
         });
-        let result = Promise.all(promises);
-        result = result.filter(item => item !== null);
-        this.setMountedState({ friends: result });
-      } catch (error) {}
+        let friends = this.state.friends;
+        friends = friends
+          .map(friend => {
+            if (friend._id === id) {
+              return null;
+            } else return friend;
+          })
+          .filter(item => item !== null);
+        this.setMountedState({ friends });
+      } catch (error) {
+        console.log("err", error);
+      }
     };
 
     setLoadingItem = async id => {
