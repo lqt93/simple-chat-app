@@ -1,6 +1,6 @@
 import React from "react";
 import { Switch, Route } from "react-router-dom";
-import Layout from "../../../components/templates/Layout";
+import Layout from "../../../components/layouts/Public";
 import validateAuth from "../../../utils/validateAuth";
 import HomePage from "../../HomeContainer";
 import NotFoundPage from "../../NotFoundContainer";
