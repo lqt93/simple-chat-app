@@ -1,3 +1,3 @@
-import PublicRoom from "./PublicRoom";
+import Community from "./Community";
 
-export default PublicRoom;
+export default Community;
