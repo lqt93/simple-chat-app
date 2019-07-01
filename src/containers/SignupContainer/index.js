@@ -1,8 +1,16 @@
-// components
+import React from "react";
 import SignupPage from "./components/Signup";
-// handlers
+import PublicLayout from "../../components/layouts/Public";
 import withSignupHandler from "./handlers/withSignup";
 // css
 import "./Signup.css";
 
-export default withSignupHandler(SignupPage);
+const Signup = props => {
+  return (
+    <PublicLayout authUser={props.authUser} signOut={props.signOut}>
+      <SignupPage {...props} />
+    </PublicLayout>
+  );
+};
+
+export default withSignupHandler(Signup);

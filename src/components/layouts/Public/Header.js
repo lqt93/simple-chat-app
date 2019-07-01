@@ -33,14 +33,6 @@ function Header({ authUser, location, signOut }) {
         )}
         {authUser && (
           <div className="navbar">
-            <nav>
-              Welcome{" "}
-              <Link to="/settings">
-                {authUser.fullName && authUser.fullName.indexOf("undefined") < 0
-                  ? authUser.fullName
-                  : authUser.username || authUser.email}
-              </Link>
-            </nav>
             <nav onClick={signOut}>Sign out</nav>
           </div>
         )}

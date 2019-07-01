@@ -12,22 +12,31 @@ const withMessengerHandler = Messenger =>
     state = {
       ...INITIAL_STATE
     };
-    async componentDidMount() {
-      await this.getRoomBasicInfo();
+    componentDidMount() {
+      this.getRoomBasicInfo();
+      this.joinSocketRoom();
+    }
+    componentWillUnmount() {
+      this.leaveSocketRoom();
+    }
+    joinSocketRoom = async () => {
       const roomId = this.props.match.params.id;
+      if (!roomId) return;
       await connectSocket();
       socket.emit("join_room", roomId);
       this.setState({
         socketLoaded: true
       });
-    }
-    componentWillUnmount() {
+    };
+    leaveSocketRoom = async () => {
       const roomId = this.props.match.params.id;
+      if (!roomId) return;
       socket.emit("leave_room", roomId);
       disconnectSocket();
-    }
+    };
     async getRoomBasicInfo() {
       const roomId = this.props.match.params.id;
+      if (!roomId) return;
       this.setState({
         loadingInfo: true
       });

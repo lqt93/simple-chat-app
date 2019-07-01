@@ -1,56 +1,77 @@
 import React from "react";
 import { Switch, Route } from "react-router-dom";
-import Layout from "../../../components/templates/Layout";
 import validateAuth from "../../../utils/validateAuth";
-import HomePage from "../../HomeContainer";
-import NotFoundPage from "../../NotFoundContainer";
-import SigninPage from "../../SigninContainer";
-import SignupPage from "../../SignupContainer";
-import MessengerPage from "../../MessengerContainer";
-import SettingsPage from "../../SettingContainer";
+import HomeRoute from "../../HomeContainer";
+import NotFoundRoute from "../../NotFoundContainer";
+import SigninRoute from "../../SigninContainer";
+import SignupRoute from "../../SignupContainer";
+import MessengerRoute from "../../MessengerContainer";
+import SettingsRoute from "../../SettingContainer";
+import CommunityRoute from "../../CommunityContainer";
+import FriendRoute from "../../FriendContainer";
 
-const App = ({ isValidated, signOut, ...rest }) => {
+const App = ({ isValidated, ...rest }) => {
   if (!isValidated) return null;
   const { authUser } = rest;
   return (
-    <Layout authUser={authUser} signOut={signOut}>
+    <React.Fragment>
       <Switch>
+        {/* home */}
         <Route
           exact
           path="/"
-          render={props => <HomePage {...rest} {...props} />}
+          render={props => <HomeRoute {...rest} {...props} />}
         />
+        {/* public routes */}
         <Route
           path="/signin"
           render={props =>
-            validateAuth(!!authUser, false)(<SigninPage {...rest} {...props} />)
+            validateAuth(!!authUser, false)(
+              <SigninRoute {...rest} {...props} />
+            )
           }
         />
         <Route
           path="/signup"
           render={props =>
-            validateAuth(!!authUser, false)(<SignupPage {...props} />)
+            validateAuth(!!authUser, false)(<SignupRoute {...props} />)
           }
         />
+        {/* private routes */}
         <Route
           path="/settings"
           render={props =>
             validateAuth(!!authUser, true)(
-              <SettingsPage {...rest} {...props} />
+              <SettingsRoute {...rest} {...props} />
             )
           }
         />
         <Route
-          path="/messages/:id"
+          path="/messenger"
           render={props =>
             validateAuth(!!authUser, true)(
-              <MessengerPage {...rest} {...props} />
+              <MessengerRoute {...rest} {...props} />
             )
           }
         />
-        <Route component={NotFoundPage} />
+        <Route
+          path="/friends"
+          render={props =>
+            validateAuth(!!authUser, true)(<FriendRoute {...rest} {...props} />)
+          }
+        />
+        <Route
+          path="/communities"
+          render={props =>
+            validateAuth(!!authUser, true)(
+              <CommunityRoute {...rest} {...props} />
+            )
+          }
+        />
+        {/* Not found */}
+        <Route component={NotFoundRoute} />
       </Switch>
-    </Layout>
+    </React.Fragment>
   );
 };
 

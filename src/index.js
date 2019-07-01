@@ -2,7 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom";
 import { BrowserRouter as Router } from "react-router-dom";
 import App from "./containers/App";
-import ThemeProvider from "./components/templates/ThemeProvider";
+import ThemeProvider from "./components/providers/ThemeProvider";
 import * as serviceWorker from "./serviceWorker";
 
 ReactDOM.render(
