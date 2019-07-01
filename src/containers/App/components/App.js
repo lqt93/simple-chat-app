@@ -43,7 +43,7 @@ const App = ({ isValidated, ...rest }) => {
           }
         />
         <Route
-          path="/messages/:id"
+          path="/messenger"
           render={props =>
             validateAuth(!!authUser, true)(
               <MessengerPage {...rest} {...props} />

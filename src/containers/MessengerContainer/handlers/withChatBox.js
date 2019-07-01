@@ -25,6 +25,8 @@ const withMessengerHandler = MessengerPage =>
       this.getMessages();
     }
     componentWillUnmount() {
+      const roomId = this.props.match.params.id;
+      if (!roomId) return;
       // remove socket's listener that handle incoming msg
       socket.removeListener("room_msg", this.handleIncomingMessages);
     }
@@ -87,6 +89,7 @@ const withMessengerHandler = MessengerPage =>
     }
     async getMoreMessages(msgContainerElement) {
       const roomId = this.props.match.params.id;
+      if (!roomId) return;
       this.setState({
         loadingMore: true
       });
@@ -147,6 +150,7 @@ const withMessengerHandler = MessengerPage =>
     }
     async getMessages() {
       const roomId = this.props.match.params.id;
+      if (!roomId) return;
       this.setState({
         loadingMessages: true
       });
