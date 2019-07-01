@@ -20,6 +20,9 @@ const PrivateHeader = ({ authUser, signOut }) => {
         <Link to="/"> SimpleChat </Link>
       </div>
       <div>
+        <Link to="/communities"> Communities </Link>
+        <Link to="/friends"> Friends </Link>
+        <Link to="/messenger"> Messenger </Link>
         <Link to="/settings"> Settings </Link>
         {authUser && <button onClick={signOut}>Sign out</button>}
       </div>
