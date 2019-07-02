@@ -4,7 +4,7 @@ import Menu from "./Menu";
 import ProfileInfo from "./ProfileInfo";
 import Security from "./Security";
 
-function SettingPage({ currentTab, authUser, setAuthValue }) {
+function AccountPage({ currentTab, authUser, setAuthValue }) {
   return (
     <div className="settings-wrapper">
       <div className="settings-container">
@@ -20,4 +20,4 @@ function SettingPage({ currentTab, authUser, setAuthValue }) {
   );
 }
 
-export default SettingPage;
+export default AccountPage;

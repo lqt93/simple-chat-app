@@ -3,9 +3,9 @@ import { Link } from "react-router-dom";
 import List from "../../../components/common/List";
 
 const menuList = [
-  { name: "Profile", path: "/settings?tab=profile" },
-  { name: "Avatar", path: "/settings?tab=avatar" },
-  { name: "Security", path: "/settings?tab=security" }
+  { name: "Profile", path: "/account?tab=profile" },
+  { name: "Avatar", path: "/account?tab=avatar" },
+  { name: "Security", path: "/account?tab=security" }
 ];
 
 function Menu({ currentTab }) {

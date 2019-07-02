@@ -6,7 +6,7 @@ import NotFoundRoute from "../../NotFoundContainer";
 import SigninRoute from "../../SigninContainer";
 import SignupRoute from "../../SignupContainer";
 import MessengerRoute from "../../MessengerContainer";
-import SettingsRoute from "../../SettingContainer";
+import AccountRoute from "../../AccountContainer";
 import CommunityRoute from "../../CommunityContainer";
 import FriendRoute from "../../FriendContainer";
 
@@ -39,10 +39,10 @@ const App = ({ isValidated, ...rest }) => {
         />
         {/* private routes */}
         <Route
-          path="/settings"
+          path="/account"
           render={props =>
             validateAuth(!!authUser, true)(
-              <SettingsRoute {...rest} {...props} />
+              <AccountRoute {...rest} {...props} />
             )
           }
         />

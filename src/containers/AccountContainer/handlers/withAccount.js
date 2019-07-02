@@ -1,7 +1,7 @@
 import React from "react";
 
-const withSettingHandler = SettingPage =>
-  class SettingHandler extends React.PureComponent {
+const withAccountHandler = AccountPage =>
+  class AccountHandler extends React.PureComponent {
     state = {
       currentTab: ""
     };
@@ -30,8 +30,8 @@ const withSettingHandler = SettingPage =>
       }
     }
     render() {
-      return <SettingPage {...this.props} {...this.state} />;
+      return <AccountPage {...this.props} {...this.state} />;
     }
   };
 
-export default withSettingHandler;
+export default withAccountHandler;
