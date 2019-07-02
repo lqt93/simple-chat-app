@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 
 function RoomItem({ data }) {
   return (
-    <Link to={`/messages/${data._id}`}>
+    <Link to={`/messenger/t/${data._id}`}>
       <li>{data.name} </li>
     </Link>
   );

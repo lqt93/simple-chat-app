@@ -2,7 +2,6 @@ import React from "react";
 import ChatBox from "./ChatBox";
 
 const Messenger = props => {
-  console.log("props messenger", props);
   const { roomInfo } = props;
   return (
     <div className="chat-box-container">

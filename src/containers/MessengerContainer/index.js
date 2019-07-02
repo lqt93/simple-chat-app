@@ -1,6 +1,7 @@
 import React from "react";
 import { Switch, Route } from "react-router-dom";
 import PrivateLayout from "../../components/layouts/Private";
+import NotFound from "../../components/pages/NotFound";
 import MessengerPage from "./components/Messenger";
 import withMessengerHandler from "./handlers/withMessenger";
 // css
@@ -12,13 +13,15 @@ const Messenger = props => {
     <PrivateLayout {...props}>
       <Switch>
         <Route
-          path="/"
+          path={thisPath}
+          exact
           render={routeProps => <MessengerPage {...props} {...routeProps} />}
         />
         <Route
-          path={`${thisPath}/:id`}
+          path={`${thisPath}/t/:id`}
           render={routeProps => <MessengerPage {...props} {...routeProps} />}
         />
+        <Route component={NotFound} />
       </Switch>
     </PrivateLayout>
   );
