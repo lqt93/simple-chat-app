@@ -1,5 +1,6 @@
 import React from "react";
 import ChatBox from "./ChatBox";
+import withMessengerHandler from "../handlers/withMessenger";
 
 const Messenger = props => {
   const { roomInfo } = props;
@@ -25,4 +26,4 @@ Messenger.defaultProps = {
   roomInfo: {}
 };
 
-export default Messenger;
+export default withMessengerHandler(Messenger);

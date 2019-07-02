@@ -3,7 +3,6 @@ import { Switch, Route } from "react-router-dom";
 import PrivateLayout from "../../components/layouts/Private";
 import NotFound from "../../components/pages/NotFound";
 import MessengerPage from "./components/Messenger";
-import withMessengerHandler from "./handlers/withMessenger";
 // css
 import "./Messenger.css";
 
@@ -27,4 +26,4 @@ const Messenger = props => {
   );
 };
 
-export default withMessengerHandler(Messenger);
+export default Messenger;
