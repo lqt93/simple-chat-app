@@ -1,19 +1,9 @@
 import React from "react";
 import request from "../../../../utils/request";
+import { debounce } from "throttle-debounce";
 
 const INITIAL_STATE = {
   friends: []
-};
-
-const debounce = (func, delay) => {
-  let debounceTimer;
-  return function(e) {
-    e.persist();
-    const context = this;
-    const args = arguments;
-    clearTimeout(debounceTimer);
-    debounceTimer = setTimeout(() => func.apply(context, args), delay);
-  };
 };
 
 const withFriendFinderHandler = FriendFinder =>
@@ -21,14 +11,14 @@ const withFriendFinderHandler = FriendFinder =>
     constructor(props) {
       super(props);
       this.state = { ...INITIAL_STATE };
-      this.delayedCallback = debounce(this.ajaxCall, 1000);
+      this.delayedCallback = debounce(1000, this.ajaxCall);
     }
 
-    ajaxCall(event) {
+    ajaxCall = event => {
       const keyword = event.target.value.trim();
       this.setState({ keyword });
       this.searchFriends(keyword);
-    }
+    };
 
     onChange = event => {
       //This will ensure that the event is not pooled
