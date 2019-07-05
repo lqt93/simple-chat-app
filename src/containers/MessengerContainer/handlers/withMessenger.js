@@ -4,7 +4,8 @@ import { socket, connectSocket, disconnectSocket } from "../../../utils/socket";
 
 const INITIAL_STATE = {
   roomInfo: {},
-  loadingInfo: false
+  loadingInfo: false,
+  isOpenFindNameInput: false
 };
 
 const withMessengerHandler = Messenger =>
@@ -13,12 +14,18 @@ const withMessengerHandler = Messenger =>
       ...INITIAL_STATE
     };
     componentDidMount() {
+      // document.body.style.overflow = "hidden !important";
       this.getRoomBasicInfo();
       this.joinSocketRoom();
     }
     componentWillUnmount() {
       this.leaveSocketRoom();
     }
+    toggleNewConversation = () => {
+      this.setState({
+        isOpenFindNameInput: !this.state.isOpenFindNameInput
+      });
+    };
     joinSocketRoom = async () => {
       const roomId = this.props.match.params.id;
       if (!roomId) return;
@@ -65,7 +72,13 @@ const withMessengerHandler = Messenger =>
       }
     }
     render() {
-      return <Messenger {...this.state} {...this.props} />;
+      return (
+        <Messenger
+          {...this.state}
+          {...this.props}
+          toggleNewConversation={this.toggleNewConversation}
+        />
+      );
     }
   };
 

@@ -1,23 +1,24 @@
 import React from "react";
-import ChatBox from "./ChatBox";
+import { makeStyles, createStyles } from "@material-ui/core/styles";
 import withMessengerHandler from "../handlers/withMessenger";
+import MsgListContainer from "./MsgListContainer";
+import RoomContainer from "./RoomContainer";
+
+const useStyles = makeStyles(theme =>
+  createStyles({
+    messengerContainer: {
+      display: "flex",
+      height: "100%"
+    }
+  })
+);
 
 const Messenger = props => {
-  const { roomInfo } = props;
+  const classes = useStyles();
   return (
-    <div className="chat-box-container">
-      <div className="msg-list-container">
-        <div className="msg-list-settings"> Settings </div>
-      </div>
-      <div className="room-container">
-        <div className="room-info">
-          <strong>{roomInfo.name}</strong>
-        </div>
-        <div className="room-details">
-          <ChatBox {...props} />
-          <div className="room-details__settings" />
-        </div>
-      </div>
+    <div className={classes.messengerContainer}>
+      <MsgListContainer {...props} />
+      <RoomContainer {...props} />
     </div>
   );
 };

@@ -1,4 +1,5 @@
 import React from "react";
+import { throttle } from "throttle-debounce";
 import request from "../../../utils/request";
 import { socket } from "../../../utils/socket";
 
@@ -8,7 +9,8 @@ const INITIAL_STATE = {
   skip: 0,
   count: 0,
   loadingMessages: false,
-  loadingMore: false
+  loadingMore: false,
+  windowHeight: null
 };
 
 // the number of messages that will be loaded each time
@@ -16,19 +18,33 @@ const STEP = 30;
 
 const withMessengerHandler = MessengerPage =>
   class MessengerHandler extends React.PureComponent {
-    state = {
-      ...INITIAL_STATE
-    };
+    constructor(props) {
+      super(props);
+      this.state = { ...INITIAL_STATE };
+      this.delayedCallback = throttle(500, this.windowResize);
+    }
     componentDidMount() {
       this.msgContainerRef = React.createRef();
       // get current messages in room
       this.getMessages();
+      // get window's height
+      this.setWindowSize();
+      window.addEventListener("resize", this.delayedCallback);
     }
     componentWillUnmount() {
       const roomId = this.props.match.params.id;
       if (!roomId) return;
       // remove socket's listener that handle incoming msg
       socket.removeListener("room_msg", this.handleIncomingMessages);
+      // remove window's size event
+      window.removeEventListener("resize", this.delayedCallback);
+    }
+    windowResize = () => {
+      this.setWindowSize();
+    };
+    setWindowSize() {
+      console.log("window height", window.innerHeight);
+      this.setState({ windowHeight: window.innerHeight });
     }
     componentWillReceiveProps(nextProps) {
       if (
