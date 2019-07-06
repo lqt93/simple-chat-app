@@ -1,5 +1,6 @@
 import React from "react";
 import { makeStyles, createStyles } from "@material-ui/core/styles";
+import { generateRoomName } from "../../utils/room";
 
 const useStyles = makeStyles(theme =>
   createStyles({
@@ -14,11 +15,15 @@ const useStyles = makeStyles(theme =>
   })
 );
 
-const RoomHeader = ({ roomInfo, isOpenFindNameInput }) => {
+const RoomHeader = ({ currentRoom, isOpenFindNameInput }) => {
   const classes = useStyles();
+  if (!currentRoom) return null;
+  const roomName = currentRoom.name
+    ? currentRoom.name
+    : generateRoomName(currentRoom.members);
   return (
     <div className={classes.roomHeader}>
-      {!isOpenFindNameInput && <strong>{roomInfo.name}</strong>}
+      {!isOpenFindNameInput && <strong>{roomName}</strong>}
       {isOpenFindNameInput && (
         <input
           style={{ width: 250 }}

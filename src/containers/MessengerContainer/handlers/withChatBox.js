@@ -43,7 +43,6 @@ const withMessengerHandler = MessengerPage =>
       this.setWindowSize();
     };
     setWindowSize() {
-      console.log("window height", window.innerHeight);
       this.setState({ windowHeight: window.innerHeight });
     }
     componentWillReceiveProps(nextProps) {

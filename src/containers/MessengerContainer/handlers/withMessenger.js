@@ -24,7 +24,11 @@ const withMessengerHandler = Messenger =>
     }
     componentWillReceiveProps(nextProps) {
       if (this.props.match.params.id !== nextProps.match.params.id) {
-        this.setState({ currentRoomId: nextProps.match.params.id });
+        const currentRoomId = nextProps.match.params.id;
+        const participant = this.state.rooms.find(
+          item => item.room._id === currentRoomId
+        );
+        this.setState({ currentRoomId, currentRoom: participant.room });
       }
     }
     toggleNewConversation = () => {
@@ -43,8 +47,10 @@ const withMessengerHandler = Messenger =>
           method: "GET"
         });
         const { rooms } = res.data.value;
-
-        this.setState({ rooms });
+        const participant = rooms.find(
+          item => item.room._id === this.state.currentRoomId
+        );
+        this.setState({ rooms, currentRoom: participant.room });
       } catch (error) {
         console.log("err", error);
       }
