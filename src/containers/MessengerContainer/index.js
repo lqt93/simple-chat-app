@@ -17,6 +17,10 @@ const Messenger = props => {
           render={routeProps => <MessengerPage {...props} {...routeProps} />}
         />
         <Route
+          path={`${thisPath}/new`}
+          render={routeProps => <MessengerPage {...props} {...routeProps} />}
+        />
+        <Route
           path={`${thisPath}/t/:id`}
           render={routeProps => <MessengerPage {...props} {...routeProps} />}
         />

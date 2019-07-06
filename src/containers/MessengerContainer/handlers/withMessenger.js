@@ -13,21 +13,47 @@ const withMessengerHandler = Messenger =>
     state = {
       ...INITIAL_STATE
     };
-    componentDidMount() {
-      // document.body.style.overflow = "hidden !important";
-      this.getRoomBasicInfo();
+    componentDidMount = () => {
+      // this.getRoomBasicInfo();
+      this.setCurrentRoom();
+      this.getPrivateRooms();
       this.joinSocketRoom();
-    }
+    };
     componentWillUnmount() {
       this.leaveSocketRoom();
+    }
+    componentWillReceiveProps(nextProps) {
+      if (this.props.match.params.id !== nextProps.match.params.id) {
+        this.setState({ currentRoomId: nextProps.match.params.id });
+      }
     }
     toggleNewConversation = () => {
       this.setState({
         isOpenFindNameInput: !this.state.isOpenFindNameInput
       });
     };
-    joinSocketRoom = async () => {
+    setCurrentRoom = () => {
       const roomId = this.props.match.params.id;
+      this.setState({ currentRoomId: roomId });
+    };
+    getPrivateRooms = async () => {
+      try {
+        const res = await request({
+          url: `/rooms/private`,
+          method: "GET"
+        });
+        const { rooms } = res.data.value;
+
+        this.setState({ rooms });
+      } catch (error) {
+        console.log("err", error);
+      }
+    };
+    chooseCurrentRoom = roomId => () => {
+      this.setState({ currentRoomId: roomId });
+    };
+    joinSocketRoom = async () => {
+      const roomId = this.state.currentRoomId;
       if (!roomId) return;
       await connectSocket();
       socket.emit("join_room", roomId);
@@ -36,13 +62,13 @@ const withMessengerHandler = Messenger =>
       });
     };
     leaveSocketRoom = async () => {
-      const roomId = this.props.match.params.id;
+      const roomId = this.state.currentRoomId;
       if (!roomId) return;
       socket.emit("leave_room", roomId);
       disconnectSocket();
     };
     async getRoomBasicInfo() {
-      const roomId = this.props.match.params.id;
+      const roomId = this.state.currentRoomId;
       if (!roomId) return;
       this.setState({
         loadingInfo: true
@@ -77,6 +103,7 @@ const withMessengerHandler = Messenger =>
           {...this.state}
           {...this.props}
           toggleNewConversation={this.toggleNewConversation}
+          chooseCurrentRoom={this.chooseCurrentRoom}
         />
       );
     }

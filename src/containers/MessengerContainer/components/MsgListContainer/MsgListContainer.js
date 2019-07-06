@@ -1,6 +1,7 @@
 import React from "react";
 import { makeStyles, createStyles } from "@material-ui/core/styles";
 import MsgListHeader from "./MsgListHeader";
+import MsgListDisplay from "./MsgListDisplay";
 
 const useStyles = makeStyles(theme =>
   createStyles({
@@ -16,6 +17,7 @@ const MsgListContainer = props => {
   return (
     <div className={classes.msgListContainer}>
       <MsgListHeader {...props} />
+      <MsgListDisplay {...props} />
     </div>
   );
 };

@@ -1,0 +1,20 @@
+export const generateRoomName = members => {
+  if (!members || members.length === 0) return null;
+  switch (true) {
+    case members.length === 1:
+      return members[0].fullName;
+    case members.length > 1 && members.length <= 3:
+      return members
+        .slice(0, 3)
+        .reduce((current, next) => current.fullName + ", " + next.fullName);
+    case members.length > 3:
+      return (
+        members
+          .slice(0, 2)
+          .reduce((current, next) => current.fullName + ", " + next.fullName) +
+        `and ${members.length - 2} other people`
+      );
+    default:
+      return null;
+  }
+};
