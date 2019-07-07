@@ -6,23 +6,31 @@ import MessengerPage from "./components/Messenger";
 // css
 import "./Messenger.css";
 
-const Messenger = props => {
-  const thisPath = props.match.path;
+const Messenger = ({
+  setAuthValue,
+  token,
+  signOut,
+  location,
+  match,
+  history,
+  ...rest
+}) => {
+  const thisPath = match.path;
   return (
-    <PrivateLayout {...props}>
+    <PrivateLayout signOut={signOut} {...rest}>
       <Switch>
         <Route
           path={thisPath}
           exact
-          render={routeProps => <MessengerPage {...props} {...routeProps} />}
+          render={routeProps => <MessengerPage {...rest} {...routeProps} />}
         />
         <Route
           path={`${thisPath}/new`}
-          render={routeProps => <MessengerPage {...props} {...routeProps} />}
+          render={routeProps => <MessengerPage {...rest} {...routeProps} />}
         />
         <Route
           path={`${thisPath}/t/:id`}
-          render={routeProps => <MessengerPage {...props} {...routeProps} />}
+          render={routeProps => <MessengerPage {...rest} {...routeProps} />}
         />
         <Route component={NotFound} />
       </Switch>

@@ -53,8 +53,8 @@ const MsgItem = ({ data, isChosen }) => {
   const classes = useStyles({
     chosenBackground: isChosen ? "#f1f0f0" : "white"
   });
-  const { members, name, _id } = data;
-  const roomName = name ? name : generateRoomName(members);
+  const { _id } = data;
+  const roomName = generateRoomName(data);
   return (
     <ListItemLink
       to={`/messenger/t/${_id}`}

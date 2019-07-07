@@ -3,9 +3,9 @@ import request from "../../../utils/request";
 import { socket, connectSocket, disconnectSocket } from "../../../utils/socket";
 
 const INITIAL_STATE = {
-  roomInfo: {},
-  loadingInfo: false,
-  isOpenFindNameInput: false
+  isOpenFindNameInput: false,
+  msgTree: {},
+  rooms: []
 };
 
 const withMessengerHandler = Messenger =>
@@ -13,22 +13,33 @@ const withMessengerHandler = Messenger =>
     state = {
       ...INITIAL_STATE
     };
-    componentDidMount = () => {
-      // this.getRoomBasicInfo();
+    componentDidMount = async () => {
+      // connect socket firstly
+      await this.handleSocket();
+
       this.setCurrentRoom();
       this.getPrivateRooms();
-      this.joinSocketRoom();
+      // this.joinSocketRoom();
     };
     componentWillUnmount() {
-      this.leaveSocketRoom();
+      // this.leaveSocketRoom();
+
+      // disconnect socket
+      disconnectSocket();
     }
     componentWillReceiveProps(nextProps) {
       if (this.props.match.params.id !== nextProps.match.params.id) {
-        const currentRoomId = nextProps.match.params.id;
+        const currentRoomId = this.props.match.params.id;
+        const nextRoomId = nextProps.match.params.id;
         const participant = this.state.rooms.find(
-          item => item.room._id === currentRoomId
+          item => item.room._id === nextRoomId
         );
-        this.setState({ currentRoomId, currentRoom: participant.room });
+        socket.emit("leave_room", currentRoomId);
+        socket.emit("join_room", nextRoomId);
+        this.setState({
+          currentRoomId: nextRoomId,
+          currentRoom: (participant && participant.room) || {}
+        });
       }
     }
     toggleNewConversation = () => {
@@ -38,6 +49,7 @@ const withMessengerHandler = Messenger =>
     };
     setCurrentRoom = () => {
       const roomId = this.props.match.params.id;
+      socket.emit("join_room", roomId);
       this.setState({ currentRoomId: roomId });
     };
     getPrivateRooms = async () => {
@@ -58,11 +70,9 @@ const withMessengerHandler = Messenger =>
     chooseCurrentRoom = roomId => () => {
       this.setState({ currentRoomId: roomId });
     };
-    joinSocketRoom = async () => {
-      const roomId = this.state.currentRoomId;
-      if (!roomId) return;
+    handleSocket = async () => {
       await connectSocket();
-      socket.emit("join_room", roomId);
+      // socket.emit("join_room", roomId);
       this.setState({
         socketLoaded: true
       });
@@ -73,36 +83,45 @@ const withMessengerHandler = Messenger =>
       socket.emit("leave_room", roomId);
       disconnectSocket();
     };
-    async getRoomBasicInfo() {
-      const roomId = this.state.currentRoomId;
-      if (!roomId) return;
-      this.setState({
-        loadingInfo: true
+    updateMsgTree = (id, data) => {
+      this.setState(prevState => {
+        return {
+          msgTree: {
+            [id]: data
+          }
+        };
       });
-      try {
-        const res = await request({
-          url: `/rooms/${roomId}`,
-          method: "GET"
-        });
-        if (res.data.status === "success") {
-          this.setState({
-            loadingInfo: false,
-            roomInfo: res.data.value.room
-          });
-        } else {
-          this.setState({
-            loadingInfo: false,
-            error: res.data.message
-          });
-        }
-      } catch (err) {
-        this.setState({
-          loadingInfo: false,
-          error: err
-        });
-        console.log("err", err);
-      }
-    }
+    };
+    // async getRoomBasicInfo() {
+    //   const roomId = this.state.currentRoomId;
+    //   if (!roomId) return;
+    //   this.setState({
+    //     loadingInfo: true
+    //   });
+    //   try {
+    //     const res = await request({
+    //       url: `/rooms/${roomId}`,
+    //       method: "GET"
+    //     });
+    //     if (res.data.status === "success") {
+    //       this.setState({
+    //         loadingInfo: false,
+    //         roomInfo: res.data.value.room
+    //       });
+    //     } else {
+    //       this.setState({
+    //         loadingInfo: false,
+    //         error: res.data.message
+    //       });
+    //     }
+    //   } catch (err) {
+    //     this.setState({
+    //       loadingInfo: false,
+    //       error: err
+    //     });
+    //     console.log("err", err);
+    //   }
+    // }
     render() {
       return (
         <Messenger
@@ -110,6 +129,7 @@ const withMessengerHandler = Messenger =>
           {...this.props}
           toggleNewConversation={this.toggleNewConversation}
           chooseCurrentRoom={this.chooseCurrentRoom}
+          updateMsgTree={this.updateMsgTree}
         />
       );
     }

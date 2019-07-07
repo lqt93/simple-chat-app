@@ -13,18 +13,14 @@ const useStyles = makeStyles(theme =>
   })
 );
 
-const Messenger = props => {
+const Messenger = ({ rooms, ...rest }) => {
   const classes = useStyles();
   return (
     <div className={classes.messengerContainer}>
-      <MsgListContainer {...props} />
-      <RoomContainer {...props} />
+      <MsgListContainer rooms={rooms} {...rest} />
+      <RoomContainer {...rest} />
     </div>
   );
-};
-
-Messenger.defaultProps = {
-  roomInfo: {}
 };
 
 export default withMessengerHandler(Messenger);
