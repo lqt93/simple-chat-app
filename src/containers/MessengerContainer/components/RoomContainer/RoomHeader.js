@@ -17,13 +17,11 @@ const useStyles = makeStyles(theme =>
 
 const RoomHeader = ({ currentRoom, isOpenFindNameInput }) => {
   const classes = useStyles();
-  if (!currentRoom) return null;
-  const roomName = currentRoom.name
-    ? currentRoom.name
-    : generateRoomName(currentRoom.members);
   return (
     <div className={classes.roomHeader}>
-      {!isOpenFindNameInput && <strong>{roomName}</strong>}
+      {currentRoom && !isOpenFindNameInput && (
+        <strong>{generateRoomName(currentRoom)}</strong>
+      )}
       {isOpenFindNameInput && (
         <input
           style={{ width: 250 }}

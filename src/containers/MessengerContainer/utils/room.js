@@ -1,4 +1,9 @@
-export const generateRoomName = members => {
+export const generateRoomName = room => {
+  if (!room) return null;
+  return room.name ? room.name : generateNameFromMembers(room.members);
+};
+
+const generateNameFromMembers = members => {
   if (!members || members.length === 0) return null;
   switch (true) {
     case members.length === 1:
