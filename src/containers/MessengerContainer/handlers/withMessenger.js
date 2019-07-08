@@ -50,7 +50,9 @@ const withMessengerHandler = Messenger =>
       this.setWindowSize();
     };
     setWindowSize() {
-      this.setState({ windowHeight: window.innerHeight });
+      this.setState({
+        windowHeight: window.innerHeight
+      });
     }
     toggleNewConversation = () => {
       this.setState({
