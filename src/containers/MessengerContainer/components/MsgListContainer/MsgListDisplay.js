@@ -5,14 +5,24 @@ import MsgItem from "./MsgItem";
 
 const useStyles = makeStyles(theme =>
   createStyles({
-    msgListDisplay: {}
+    msgListDisplay: {
+      overflowY: "auto"
+    }
   })
 );
 
-const MsgListDisplay = ({ rooms, currentRoomId, chooseCurrentRoom }) => {
+const MsgListDisplay = ({
+  rooms,
+  currentRoomId,
+  chooseCurrentRoom,
+  windowHeight
+}) => {
   const classes = useStyles();
   return (
-    <div className={classes.msgListDisplay}>
+    <div
+      className={classes.msgListDisplay}
+      style={{ height: windowHeight - 131 }}
+    >
       <List>
         {rooms &&
           rooms.map(item => {

@@ -1,5 +1,4 @@
 import React from "react";
-import { throttle } from "throttle-debounce";
 import request from "../../../utils/request";
 import { socket } from "../../../utils/socket";
 
@@ -17,16 +16,9 @@ const STEP = 30;
 
 const withMessengerHandler = MessengerPage =>
   class MessengerHandler extends React.PureComponent {
-    constructor(props) {
-      super(props);
-      this.state = { ...INITIAL_STATE, windowHeight: null };
-      this.delayedCallback = throttle(500, this.windowResize);
-    }
+    state = { ...INITIAL_STATE };
     componentDidMount() {
       this.msgContainerRef = React.createRef();
-      // get window's height
-      this.setWindowSize();
-      window.addEventListener("resize", this.delayedCallback);
     }
     componentWillReceiveProps = async nextProps => {
       const currentRoomId = this.props.currentRoomId;
@@ -90,12 +82,7 @@ const withMessengerHandler = MessengerPage =>
       // remove window's size event
       window.removeEventListener("resize", this.delayedCallback);
     }
-    windowResize = () => {
-      this.setWindowSize();
-    };
-    setWindowSize() {
-      this.setState({ windowHeight: window.innerHeight });
-    }
+
     handleIncomingMessages = async msg => {
       console.log("received msg:", msg);
       // look up in current msg list to check if incoming msg is exist or not

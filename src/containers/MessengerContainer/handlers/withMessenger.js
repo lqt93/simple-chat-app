@@ -1,4 +1,5 @@
 import React from "react";
+import { throttle } from "throttle-debounce";
 import request from "../../../utils/request";
 import { socket, connectSocket, disconnectSocket } from "../../../utils/socket";
 
@@ -10,11 +11,16 @@ const INITIAL_STATE = {
 
 const withMessengerHandler = Messenger =>
   class MessengerHandler extends React.PureComponent {
-    state = {
-      ...INITIAL_STATE
-    };
+    constructor(props) {
+      super(props);
+      this.state = { ...INITIAL_STATE, windowHeight: null };
+      this.delayedCallback = throttle(500, this.windowResize);
+    }
     componentDidMount = async () => {
-      // connect socket firstly
+      // get window's height
+      this.setWindowSize();
+      window.addEventListener("resize", this.delayedCallback);
+      // connect socket before getting rooms
       await this.handleSocket();
 
       await this.getPrivateRooms();
@@ -38,6 +44,12 @@ const withMessengerHandler = Messenger =>
           currentRoom: (participant && participant.room) || {}
         });
       }
+    }
+    windowResize = () => {
+      this.setWindowSize();
+    };
+    setWindowSize() {
+      this.setState({ windowHeight: window.innerHeight });
     }
     toggleNewConversation = () => {
       this.setState({
