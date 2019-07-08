@@ -60,7 +60,7 @@ const withMessengerHandler = MessengerPage =>
               }
             }
             const additionalMessages = resMessages.slice(
-              targetIndex + 1,
+              Number(targetIndex) + 1,
               resMessages.length
             );
             savedRoomMessages = savedRoomMessages.concat(additionalMessages);
@@ -96,7 +96,6 @@ const withMessengerHandler = MessengerPage =>
     setWindowSize() {
       this.setState({ windowHeight: window.innerHeight });
     }
-
     handleIncomingMessages = async msg => {
       console.log("received msg:", msg);
       // look up in current msg list to check if incoming msg is exist or not
