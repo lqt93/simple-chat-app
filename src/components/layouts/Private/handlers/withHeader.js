@@ -23,8 +23,9 @@ const withHeader = Header =>
       }
     };
     handleClickDrawerItem = link => () => {
-      this.toggleDrawer(false);
-      if (link && link === "signOut") {
+      this.setState({ isOpenDrawer: false });
+      if (!link) return;
+      if (link === "signOut") {
         this.props.signOut();
       } else {
         this.props.history.push(link);
