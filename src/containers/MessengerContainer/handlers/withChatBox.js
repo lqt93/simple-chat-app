@@ -19,11 +19,11 @@ const withMessengerHandler = MessengerPage =>
     state = { ...INITIAL_STATE };
     componentDidMount() {
       this.msgContainerRef = React.createRef();
+      this.getMessages(this.props.currentRoomId);
     }
     componentWillReceiveProps = async nextProps => {
       const currentRoomId = this.props.currentRoomId;
       const nextRoomId = nextProps.currentRoomId;
-
       if (currentRoomId !== nextRoomId) {
         if (currentRoomId && this.state.messages) {
           this.props.updateMsgTree(currentRoomId, this.state.messages);
