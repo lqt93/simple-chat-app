@@ -17,7 +17,7 @@ const Messenger = ({
 }) => {
   const thisPath = match.path;
   return (
-    <PrivateLayout signOut={signOut} {...rest}>
+    <PrivateLayout signOut={signOut} history={history} {...rest}>
       <Switch>
         <Route
           path={thisPath}
