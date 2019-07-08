@@ -39,6 +39,7 @@ const withMessengerHandler = MessengerPage =>
         } else {
           // if this room's messages are loaded and saved
           // call request to check if there is any new message sent to this room
+          this.setState({ loadingMessages: true });
           const resObj = await this.requestGetMessage(nextRoomId);
           const resMessages = resObj.messages;
           const savedLastItem = savedRoomMessages[savedRoomMessages.length - 1];
@@ -60,7 +61,8 @@ const withMessengerHandler = MessengerPage =>
           await this.setState({
             ...INITIAL_STATE,
             messages: savedRoomMessages,
-            changeRoom: true
+            changeRoom: true,
+            loadingMessages: false
           });
           this.scrollToBottom();
         }

@@ -1,5 +1,6 @@
 import React from "react";
 import { makeStyles, createStyles } from "@material-ui/core/styles";
+import { CircularProgress } from "@material-ui/core";
 import List from "../../../../components/common/List";
 import Input from "./Input";
 import MessageItem from "./MessageItem";
@@ -16,6 +17,18 @@ const useStyles = makeStyles(theme =>
       position: "relative",
       overflowY: "auto",
       borderBottom: "1px solid rgba(0, 0, 0, 0.2)"
+    },
+    loadingContainer: {
+      width: "100%",
+      height: "100%",
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center"
+    },
+    loadingMoreContainer: {
+      display: "flex",
+      justifyContent: "center",
+      padding: theme.spacing(2)
     }
   })
 );
@@ -28,6 +41,7 @@ const ChatBox = React.forwardRef(
       handleChange,
       submit,
       handleScroll,
+      loadingMessages,
       loadingMore,
       windowHeight
     },
@@ -42,16 +56,27 @@ const ChatBox = React.forwardRef(
           onScroll={handleScroll}
           style={{ height: windowHeight - 182 }}
         >
-          {loadingMore && <div style={{ marginLeft: 50 }}>...loading</div>}
-          <List
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              padding: 16
-            }}
-            list={messages}
-            ItemComponent={MessageItem}
-          />
+          {loadingMore && (
+            <div className={classes.loadingMoreContainer}>
+              <CircularProgress size={24} />
+            </div>
+          )}
+          {!loadingMessages && (
+            <List
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                padding: 16
+              }}
+              list={messages}
+              ItemComponent={MessageItem}
+            />
+          )}
+          {loadingMessages && (
+            <div className={classes.loadingContainer}>
+              <CircularProgress />
+            </div>
+          )}
         </div>
         <Input
           value={currentInput}
