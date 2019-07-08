@@ -6,7 +6,8 @@ import { socket, connectSocket, disconnectSocket } from "../../../utils/socket";
 const INITIAL_STATE = {
   isOpenFindNameInput: false,
   msgTree: {},
-  rooms: []
+  rooms: [],
+  socketLoaded: false
 };
 
 const withMessengerHandler = Messenger =>
@@ -124,6 +125,7 @@ const withMessengerHandler = Messenger =>
       });
     };
     render() {
+      if (!this.state.socketLoaded) return null;
       return (
         <Messenger
           {...this.state}

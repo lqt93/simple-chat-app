@@ -20,6 +20,9 @@ const withMessengerHandler = MessengerPage =>
     componentDidMount() {
       this.msgContainerRef = React.createRef();
       this.getMessages(this.props.currentRoomId);
+      // handle incoming messages through socket's io
+      socket.on("room_msg", this.handleIncomingMessages);
+      this.setState({ roomListenEvent: true });
     }
     componentWillReceiveProps = async nextProps => {
       const currentRoomId = this.props.currentRoomId;
@@ -44,6 +47,7 @@ const withMessengerHandler = MessengerPage =>
           const resMessages = resObj.messages;
           const savedLastItem = savedRoomMessages[savedRoomMessages.length - 1];
           const resLastItem = resMessages[resMessages.length - 1];
+          let messages = savedRoomMessages;
           if (savedLastItem._id !== resLastItem._id) {
             let targetIndex = null;
             for (let i in resMessages) {
@@ -52,28 +56,26 @@ const withMessengerHandler = MessengerPage =>
                 break;
               }
             }
-            const additionalMessages = resMessages.slice(
-              Number(targetIndex) + 1,
-              resMessages.length
-            );
-            savedRoomMessages = savedRoomMessages.concat(additionalMessages);
+            if (typeof targetIndex === "number" && targetIndex > 0) {
+              const additionalMessages = resMessages.slice(
+                Number(targetIndex) + 1,
+                resMessages.length
+              );
+              messages = savedRoomMessages.concat(additionalMessages);
+            } else {
+              messages = resMessages;
+            }
           }
           await this.setState({
             ...INITIAL_STATE,
-            messages: savedRoomMessages,
+            messages,
             changeRoom: true,
-            loadingMessages: false
+            loadingMessages: false,
+            skip: messages.length,
+            count: resObj.count
           });
           this.scrollToBottom();
         }
-      }
-      if (
-        this.props.socketLoaded !== nextProps.socketLoaded &&
-        nextProps.socketLoaded === true
-      ) {
-        // handle incoming messages through socket's io
-        socket.on("room_msg", this.handleIncomingMessages);
-        this.setState({ roomListenEvent: true });
       }
     };
     componentWillUnmount() {
@@ -87,15 +89,25 @@ const withMessengerHandler = MessengerPage =>
 
     handleIncomingMessages = async msg => {
       console.log("received msg:", msg);
-      // look up in current msg list to check if incoming msg is exist or not
-      const existMsg = await this.state.messages.find(
-        item => item.timeTicket === msg.timeTicket
-      );
-      if (existMsg) return;
+      let isExistMsg = false;
 
       // check incoming msg is belonged to current authUser or not
       const { authUser } = this.props;
       msg.isAuthOwner = authUser._id === msg.owner._id;
+
+      // look up in current msg list to check if incoming msg is exist or not
+      const updatingMessages = this.state.messages.map(item => {
+        if (item.timeTicket === msg.timeTicket) {
+          isExistMsg = true;
+          item = msg;
+        }
+        return item;
+      });
+
+      if (isExistMsg)
+        return this.setState({
+          messages: updatingMessages
+        });
 
       // add new messages to list
       await this.setState(prevState => {
@@ -170,7 +182,7 @@ const withMessengerHandler = MessengerPage =>
           let messages = newMessages.concat(prevState.messages);
           return {
             messages,
-            skip: prevState.skip + STEP,
+            skip: prevState.skip + newMessages.length,
             loadingMore: false,
             count: res.data.value.count
           };
@@ -227,7 +239,7 @@ const withMessengerHandler = MessengerPage =>
           loadingMessages: false,
           messages: resObj.messages,
           count: resObj.count,
-          skip: STEP
+          skip: resObj.messages.length
         });
         this.scrollToBottom();
       } catch (err) {
