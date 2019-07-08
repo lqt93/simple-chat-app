@@ -32,6 +32,10 @@ const Messenger = ({
           path={`${thisPath}/t/:id`}
           render={routeProps => <MessengerPage {...rest} {...routeProps} />}
         />
+        <Route
+          path={`${thisPath}/t`}
+          render={routeProps => <MessengerPage {...rest} {...routeProps} />}
+        />
         <Route component={NotFound} />
       </Switch>
     </PrivateLayout>

@@ -58,7 +58,16 @@ const withMessengerHandler = Messenger =>
     };
     setCurrentRoom = async () => {
       const roomId = this.props.match.params.id;
-      if (!roomId) return this.props.history.push("/messenger");
+      const { pathname } = this.props.location;
+      if (
+        !roomId ||
+        pathname === "/messenger" ||
+        pathname === "/messenger/t" ||
+        pathname === "/messenger/t/"
+      ) {
+        const { rooms } = this.state;
+        return this.props.history.push(`/messenger/t/${rooms[0].room._id}`);
+      }
       try {
         const res = await request({
           url: `/rooms/private/${roomId}`,
@@ -73,6 +82,8 @@ const withMessengerHandler = Messenger =>
         this.setState({ currentRoomId: targetId, currentRoom: foundRoom.room });
       } catch (error) {
         console.log("err", error);
+        const { rooms } = this.state;
+        return this.props.history.push(`/messenger/t/${rooms[0].room._id}`);
       }
     };
     getPrivateRooms = () =>
