@@ -6,13 +6,19 @@ import RoomBody from "./RoomBody";
 const useStyles = makeStyles(theme =>
   createStyles({
     roomContainer: {
-      width: "75%"
+      width: "75%",
+      [theme.breakpoints.down("xs")]: {
+        display: props => props.isMessengerHome && "none",
+        width: props => !props.isMessengerHome && "100%"
+      }
     }
   })
 );
 
 const RoomContainer = props => {
-  const classes = useStyles();
+  const classes = useStyles({
+    isMessengerHome: props.location.pathname === "/messenger"
+  });
   const { currentRoomId } = props;
   return (
     <div className={classes.roomContainer}>

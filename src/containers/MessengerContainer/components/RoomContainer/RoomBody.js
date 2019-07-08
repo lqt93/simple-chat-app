@@ -12,7 +12,11 @@ const useStyles = makeStyles(theme =>
       borderLeft: "1px solid rgba(0, 0, 0, 0.2)",
       flex: "0 2 33.33%",
       maxWidth: 420,
-      minWidth: 200
+      minWidth: 200,
+      display: "flex",
+      [theme.breakpoints.down("xs")]: {
+        display: "none"
+      }
     }
   })
 );

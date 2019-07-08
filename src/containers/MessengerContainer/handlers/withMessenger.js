@@ -61,8 +61,7 @@ const withMessengerHandler = Messenger =>
       const roomId = this.props.match.params.id;
       const { pathname } = this.props.location;
       if (
-        !roomId ||
-        pathname === "/messenger" ||
+        (pathname !== "/messenger" && !roomId) ||
         pathname === "/messenger/t" ||
         pathname === "/messenger/t/"
       ) {
@@ -84,7 +83,8 @@ const withMessengerHandler = Messenger =>
       } catch (error) {
         console.log("err", error);
         const { rooms } = this.state;
-        return this.props.history.push(`/messenger/t/${rooms[0].room._id}`);
+        if (pathname !== "/messenger")
+          return this.props.history.push(`/messenger/t/${rooms[0].room._id}`);
       }
     };
     getPrivateRooms = () =>

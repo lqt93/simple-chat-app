@@ -11,7 +11,10 @@ const useStyles = makeStyles(theme =>
       display: "flex",
       flex: "2 0 0%",
       flexDirection: "column",
-      position: "relative"
+      position: "relative",
+      [theme.breakpoints.down("xs")]: {
+        flex: "100%"
+      }
     },
     presentation: {
       position: "relative",
