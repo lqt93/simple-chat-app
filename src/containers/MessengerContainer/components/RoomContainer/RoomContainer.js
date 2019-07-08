@@ -13,10 +13,15 @@ const useStyles = makeStyles(theme =>
 
 const RoomContainer = props => {
   const classes = useStyles();
+  const { currentRoomId } = props;
   return (
     <div className={classes.roomContainer}>
-      <RoomHeader {...props} />
-      <RoomBody {...props} />
+      {currentRoomId && (
+        <React.Fragment>
+          <RoomHeader {...props} />
+          <RoomBody {...props} />
+        </React.Fragment>
+      )}
     </div>
   );
 };

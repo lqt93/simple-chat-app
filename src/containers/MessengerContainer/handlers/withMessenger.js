@@ -17,13 +17,10 @@ const withMessengerHandler = Messenger =>
       // connect socket firstly
       await this.handleSocket();
 
+      await this.getPrivateRooms();
       this.setCurrentRoom();
-      this.getPrivateRooms();
-      // this.joinSocketRoom();
     };
     componentWillUnmount() {
-      // this.leaveSocketRoom();
-
       // disconnect socket
       disconnectSocket();
     }
@@ -47,26 +44,43 @@ const withMessengerHandler = Messenger =>
         isOpenFindNameInput: !this.state.isOpenFindNameInput
       });
     };
-    setCurrentRoom = () => {
+    setCurrentRoom = async () => {
       const roomId = this.props.match.params.id;
-      socket.emit("join_room", roomId);
-      this.setState({ currentRoomId: roomId });
-    };
-    getPrivateRooms = async () => {
+      if (!roomId) return this.props.history.push("/messenger");
       try {
         const res = await request({
-          url: `/rooms/private`,
+          url: `/rooms/private/${roomId}`,
           method: "GET"
         });
-        const { rooms } = res.data.value;
-        const participant = rooms.find(
-          item => item.room._id === this.state.currentRoomId
-        );
-        this.setState({ rooms, currentRoom: participant.room });
+        const foundRoom = res.data.value.room;
+        if (!foundRoom) {
+          return this.props.history.push("/messenger");
+        }
+        const targetId = foundRoom.room._id;
+        socket.emit("join_room", targetId);
+        this.setState({ currentRoomId: targetId, currentRoom: foundRoom.room });
       } catch (error) {
         console.log("err", error);
       }
     };
+    getPrivateRooms = () =>
+      new Promise(async (resolve, reject) => {
+        try {
+          const res = await request({
+            url: `/rooms/private`,
+            method: "GET"
+          });
+          const { rooms } = res.data.value;
+
+          await this.setState({
+            rooms
+          });
+          resolve();
+        } catch (error) {
+          console.log("err", error);
+          reject(error);
+        }
+      });
     chooseCurrentRoom = roomId => () => {
       this.setState({ currentRoomId: roomId });
     };
@@ -77,12 +91,6 @@ const withMessengerHandler = Messenger =>
         socketLoaded: true
       });
     };
-    leaveSocketRoom = async () => {
-      const roomId = this.state.currentRoomId;
-      if (!roomId) return;
-      socket.emit("leave_room", roomId);
-      disconnectSocket();
-    };
     updateMsgTree = (id, data) => {
       this.setState(prevState => {
         return {
@@ -92,36 +100,6 @@ const withMessengerHandler = Messenger =>
         };
       });
     };
-    // async getRoomBasicInfo() {
-    //   const roomId = this.state.currentRoomId;
-    //   if (!roomId) return;
-    //   this.setState({
-    //     loadingInfo: true
-    //   });
-    //   try {
-    //     const res = await request({
-    //       url: `/rooms/${roomId}`,
-    //       method: "GET"
-    //     });
-    //     if (res.data.status === "success") {
-    //       this.setState({
-    //         loadingInfo: false,
-    //         roomInfo: res.data.value.room
-    //       });
-    //     } else {
-    //       this.setState({
-    //         loadingInfo: false,
-    //         error: res.data.message
-    //       });
-    //     }
-    //   } catch (err) {
-    //     this.setState({
-    //       loadingInfo: false,
-    //       error: err
-    //     });
-    //     console.log("err", err);
-    //   }
-    // }
     render() {
       return (
         <Messenger
