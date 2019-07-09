@@ -96,8 +96,13 @@ const withMessengerHandler = Messenger =>
             url: `/rooms/private`,
             method: "GET"
           });
-          const { rooms } = res.data.value;
-
+          let { rooms } = res.data.value;
+          rooms = rooms.map(item => {
+            item.room.members = item.room.members.filter(
+              member => member._id !== this.props.authUser._id
+            );
+            return item;
+          });
           await this.setState({
             rooms
           });
