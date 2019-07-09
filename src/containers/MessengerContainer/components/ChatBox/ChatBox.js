@@ -59,7 +59,7 @@ const ChatBox = React.forwardRef(
           onScroll={handleScroll}
           style={{ height: windowHeight - 182 }}
         >
-          {loadingMore && (
+          {!loadingMessages && loadingMore && (
             <div className={classes.loadingMoreContainer}>
               <CircularProgress size={24} />
             </div>

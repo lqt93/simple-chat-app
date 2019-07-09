@@ -16,6 +16,7 @@ const STEP = 30;
 
 const withMessengerHandler = MessengerPage =>
   class MessengerHandler extends React.PureComponent {
+    loadingRoomId = null;
     state = { ...INITIAL_STATE };
     componentDidMount() {
       this.msgContainerRef = React.createRef();
@@ -35,13 +36,12 @@ const withMessengerHandler = MessengerPage =>
         let savedRoomMessages = this.props.msgTree[nextRoomId];
         // if this room has not loaded messages
         if (!savedRoomMessages || savedRoomMessages.length === 0) {
-          // reset state
-          this.setState({ ...INITIAL_STATE });
           // get messages first time
           this.getMessages(nextRoomId);
         } else {
           // if this room's messages are loaded and saved
           // call request to check if there is any new message sent to this room
+          this.loadingRoomId = nextRoomId;
           this.setState({ loadingMessages: true });
           const resObj = await this.requestGetMessage(nextRoomId);
           const resMessages = resObj.messages;
@@ -66,6 +66,7 @@ const withMessengerHandler = MessengerPage =>
               messages = resMessages;
             }
           }
+          if (nextRoomId !== this.loadingRoomId) return;
           await this.setState({
             ...INITIAL_STATE,
             messages,
@@ -130,6 +131,7 @@ const withMessengerHandler = MessengerPage =>
       if (
         msgContainerElement.scrollTop === 0 &&
         !this.state.loadingMore &&
+        !this.state.loadingMessages &&
         this.state.count > (this.state.messages && this.state.messages.length)
       ) {
         // load previous messages
@@ -148,6 +150,7 @@ const withMessengerHandler = MessengerPage =>
     async getMoreMessages(msgContainerElement) {
       const roomId = this.props.currentRoomId;
       if (!roomId) return;
+      if (this.state.loadingMore || this.state.loadingMessages) return;
       this.setState({
         loadingMore: true
       });
@@ -230,11 +233,13 @@ const withMessengerHandler = MessengerPage =>
     };
     async getMessages(roomId) {
       if (!roomId) return;
+      this.loadingRoomId = roomId;
       this.setState({
         loadingMessages: true
       });
       try {
         const resObj = await this.requestGetMessage(roomId);
+        if (roomId !== this.loadingRoomId) return;
         await this.setState({
           loadingMessages: false,
           messages: resObj.messages,
