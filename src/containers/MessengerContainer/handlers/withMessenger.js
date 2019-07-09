@@ -15,9 +15,11 @@ const withMessengerHandler = Messenger =>
     constructor(props) {
       super(props);
       this.state = { ...INITIAL_STATE, windowHeight: null };
+      this._isMounted = false;
       this.delayedCallback = throttle(500, this.windowResize);
     }
     componentDidMount = async () => {
+      this._isMounted = true;
       // get window's height
       this.setWindowSize();
       window.addEventListener("resize", this.delayedCallback);
@@ -25,9 +27,10 @@ const withMessengerHandler = Messenger =>
       await this.handleSocket();
 
       await this.getPrivateRooms();
-      this.setCurrentRoom();
+      this.analyzeRoutes();
     };
     componentWillUnmount() {
+      this._isMounted = false;
       // disconnect socket
       disconnectSocket();
     }
@@ -40,7 +43,7 @@ const withMessengerHandler = Messenger =>
         );
         socket.emit("leave_room", currentRoomId);
         socket.emit("join_room", nextRoomId);
-        this.setState({
+        this.setMountedState({
           currentRoomId: nextRoomId,
           currentRoom: (participant && participant.room) || {}
         });
@@ -50,44 +53,60 @@ const withMessengerHandler = Messenger =>
       this.setWindowSize();
     };
     setWindowSize() {
-      this.setState({
+      this.setMountedState({
         windowHeight: window.innerHeight
       });
     }
     toggleNewConversation = () => {
-      this.setState({
+      this.setMountedState({
         isOpenFindNameInput: !this.state.isOpenFindNameInput
       });
     };
-    setCurrentRoom = async () => {
-      const roomId = this.props.match.params.id;
+    analyzeRoutes = async () => {
       const { pathname } = this.props.location;
-      if (
-        (pathname !== "/messenger" && !roomId) ||
-        pathname === "/messenger/t" ||
-        pathname === "/messenger/t/"
-      ) {
+      if (pathname === "/messenger") return;
+
+      if (pathname === "/messenger/new") {
+        return;
+      }
+      // handle path: /messenger/t/:id
+      const roomId = this.props.match.params.id;
+      if (!roomId) {
         const { rooms } = this.state;
         return this.props.history.push(`/messenger/t/${rooms[0].room._id}`);
-      }
-      try {
-        const res = await request({
-          url: `/rooms/private/${roomId}`,
-          method: "GET"
-        });
-        const foundRoom = res.data.value.room;
-        if (!foundRoom) {
-          return this.props.history.push("/messenger");
+      } else {
+        try {
+          const foundRoom = await this.checkRoomId(roomId);
+          this.setCurrentRoom(foundRoom);
+        } catch (error) {
+          console.log("err", error);
+          const { rooms } = this.state;
+          if (pathname !== "/messenger")
+            return this.props.history.push(`/messenger/t/${rooms[0].room._id}`);
         }
-        const targetId = foundRoom.room._id;
-        socket.emit("join_room", targetId);
-        this.setState({ currentRoomId: targetId, currentRoom: foundRoom.room });
-      } catch (error) {
-        console.log("err", error);
-        const { rooms } = this.state;
-        if (pathname !== "/messenger")
-          return this.props.history.push(`/messenger/t/${rooms[0].room._id}`);
       }
+    };
+    checkRoomId = async roomId =>
+      new Promise(async (resolve, reject) => {
+        try {
+          const res = await request({
+            url: `/rooms/private/${roomId}`,
+            method: "GET"
+          });
+          if (!res.data.value) reject("Room not found");
+          const foundRoom = res.data.value.room;
+          resolve(foundRoom);
+        } catch (error) {
+          reject(error);
+        }
+      });
+    setCurrentRoom = foundRoom => {
+      const targetId = foundRoom.room._id;
+      socket.emit("join_room", targetId);
+      this.setMountedState({
+        currentRoomId: targetId,
+        currentRoom: foundRoom.room
+      });
     };
     getPrivateRooms = () =>
       new Promise(async (resolve, reject) => {
@@ -103,7 +122,7 @@ const withMessengerHandler = Messenger =>
             );
             return item;
           });
-          await this.setState({
+          await this.setMountedState({
             rooms
           });
           resolve();
@@ -113,17 +132,17 @@ const withMessengerHandler = Messenger =>
         }
       });
     chooseCurrentRoom = roomId => () => {
-      this.setState({ currentRoomId: roomId });
+      this.setMountedState({ currentRoomId: roomId });
     };
     handleSocket = async () => {
       await connectSocket();
       // socket.emit("join_room", roomId);
-      this.setState({
+      this.setMountedState({
         socketLoaded: true
       });
     };
     updateMsgTree = (id, data) => {
-      this.setState(prevState => {
+      this.setMountedState(prevState => {
         return {
           msgTree: {
             [id]: data
@@ -131,6 +150,9 @@ const withMessengerHandler = Messenger =>
         };
       });
     };
+    setMountedState(props) {
+      if (this._isMounted) this.setState(props);
+    }
     render() {
       if (!this.state.socketLoaded) return null;
       return (
