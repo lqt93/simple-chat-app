@@ -35,9 +35,9 @@ const withMessengerHandler = Messenger =>
       disconnectSocket();
     }
     componentWillReceiveProps(nextProps) {
-      if (this.props.match.params.id !== nextProps.match.params.id) {
-        const currentRoomId = this.props.match.params.id;
-        const nextRoomId = nextProps.match.params.id;
+      const currentRoomId = this.props.match.params.id;
+      const nextRoomId = nextProps.match.params.id;
+      if (currentRoomId !== nextRoomId) {
         const participant = this.state.rooms.find(
           item => item.room._id === nextRoomId
         );
@@ -46,6 +46,17 @@ const withMessengerHandler = Messenger =>
         this.setMountedState({
           currentRoomId: nextRoomId,
           currentRoom: (participant && participant.room) || {}
+        });
+      }
+      const currentPathname = this.props.location.pathname;
+      const nextPathname = nextProps.location.pathname;
+      if (currentPathname !== nextPathname) {
+        this.setMountedState({
+          choosingNewMessage: nextPathname === "/messenger/new",
+          showingNewMessage:
+            (nextPathname === "/messenger/new" &&
+              !this.state.showingNewMessage) ||
+            this.state.showingNewMessage
         });
       }
     }
@@ -57,16 +68,30 @@ const withMessengerHandler = Messenger =>
         windowHeight: window.innerHeight
       });
     }
-    toggleNewConversation = () => {
-      this.setMountedState({
-        isOpenFindNameInput: !this.state.isOpenFindNameInput
-      });
+    removeRoom = id => () => {
+      if (id === "new") {
+        this.closeNewConversation();
+      }
+    };
+    closeNewConversation = () => {
+      this.setState(
+        { choosingNewMessage: false, showingNewMessage: false },
+        () => {
+          this.props.history.push(
+            `/messenger/t/${this.state.rooms[0].room._id}`
+          );
+        }
+      );
     };
     analyzeRoutes = async () => {
       const { pathname } = this.props.location;
       if (pathname === "/messenger") return;
 
       if (pathname === "/messenger/new") {
+        this.setMountedState({
+          choosingNewMessage: true,
+          showingNewMessage: true
+        });
         return;
       }
       // handle path: /messenger/t/:id
@@ -103,6 +128,9 @@ const withMessengerHandler = Messenger =>
     setCurrentRoom = foundRoom => {
       const targetId = foundRoom.room._id;
       socket.emit("join_room", targetId);
+      foundRoom.room.members = foundRoom.room.members.filter(
+        member => member._id !== this.props.authUser._id
+      );
       this.setMountedState({
         currentRoomId: targetId,
         currentRoom: foundRoom.room
@@ -159,9 +187,10 @@ const withMessengerHandler = Messenger =>
         <Messenger
           {...this.state}
           {...this.props}
-          toggleNewConversation={this.toggleNewConversation}
+          closeNewConversation={this.closeNewConversation}
           chooseCurrentRoom={this.chooseCurrentRoom}
           updateMsgTree={this.updateMsgTree}
+          removeRoom={this.removeRoom}
         />
       );
     }

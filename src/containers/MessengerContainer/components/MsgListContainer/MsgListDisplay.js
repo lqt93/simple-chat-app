@@ -1,6 +1,13 @@
 import React from "react";
 import { makeStyles, createStyles } from "@material-ui/core/styles";
-import { List } from "@material-ui/core";
+import {
+  List,
+  ListItem,
+  ListItemText,
+  ListItemAvatar,
+  ListItemIcon,
+  Avatar
+} from "@material-ui/core";
 import MsgItem from "./MsgItem";
 
 const useStyles = makeStyles(theme =>
@@ -14,8 +21,10 @@ const useStyles = makeStyles(theme =>
 const MsgListDisplay = ({
   rooms,
   currentRoomId,
-  chooseCurrentRoom,
-  windowHeight
+  windowHeight,
+  choosingNewMessage,
+  showingNewMessage,
+  removeRoom
 }) => {
   const classes = useStyles();
   return (
@@ -24,6 +33,17 @@ const MsgListDisplay = ({
       style={{ height: windowHeight - 131 }}
     >
       <List>
+        {showingNewMessage && (
+          <MsgItem
+            key="new messge"
+            data={{
+              _id: "new",
+              name: "New message"
+            }}
+            isChosen={choosingNewMessage}
+            removeRoom={removeRoom}
+          />
+        )}
         {rooms &&
           rooms.map(item => {
             return (
@@ -31,7 +51,6 @@ const MsgListDisplay = ({
                 key={item._id}
                 data={item.room}
                 isChosen={currentRoomId === item.room._id}
-                onClick={chooseCurrentRoom(item.room._id)}
               />
             );
           })}

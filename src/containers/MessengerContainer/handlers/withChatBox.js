@@ -14,16 +14,18 @@ const INITIAL_STATE = {
 // the number of messages that will be loaded each time
 const STEP = 30;
 
-const withMessengerHandler = MessengerPage =>
-  class MessengerHandler extends React.PureComponent {
+const withChatBoxHandler = ChatBox =>
+  class ChatBoxHandler extends React.PureComponent {
+    _isMounted = false;
     loadingRoomId = null;
     state = { ...INITIAL_STATE };
     componentDidMount() {
+      this._isMounted = true;
       this.msgContainerRef = React.createRef();
       this.getMessages(this.props.currentRoomId);
       // handle incoming messages through socket's io
       socket.on("room_msg", this.handleIncomingMessages);
-      this.setState({ roomListenEvent: true });
+      this.setMountedState({ roomListenEvent: true });
     }
     componentWillReceiveProps = async nextProps => {
       const currentRoomId = this.props.currentRoomId;
@@ -42,7 +44,7 @@ const withMessengerHandler = MessengerPage =>
           // if this room's messages are loaded and saved
           // call request to check if there is any new message sent to this room
           this.loadingRoomId = nextRoomId;
-          this.setState({ loadingMessages: true });
+          this.setMountedState({ loadingMessages: true });
           const resObj = await this.requestGetMessage(nextRoomId);
           const resMessages = resObj.messages;
           const savedLastItem = savedRoomMessages[savedRoomMessages.length - 1];
@@ -67,7 +69,7 @@ const withMessengerHandler = MessengerPage =>
             }
           }
           if (nextRoomId !== this.loadingRoomId) return;
-          await this.setState({
+          await this.setMountedState({
             ...INITIAL_STATE,
             messages,
             changeRoom: true,
@@ -80,6 +82,7 @@ const withMessengerHandler = MessengerPage =>
       }
     };
     componentWillUnmount() {
+      this._isMounted = false;
       const roomId = this.props.currentRoomId;
       if (!roomId || !this.state.roomListenEvent) return;
       // remove socket's listener that handle incoming msg
@@ -106,12 +109,12 @@ const withMessengerHandler = MessengerPage =>
       });
 
       if (isExistMsg)
-        return this.setState({
+        return this.setMountedState({
           messages: updatingMessages
         });
 
       // add new messages to list
-      await this.setState(prevState => {
+      await this.setMountedState(prevState => {
         const messages = prevState.messages.concat(msg);
         return {
           messages
@@ -151,7 +154,7 @@ const withMessengerHandler = MessengerPage =>
       const roomId = this.props.currentRoomId;
       if (!roomId) return;
       if (this.state.loadingMore || this.state.loadingMessages) return;
-      this.setState({
+      this.setMountedState({
         loadingMore: true
       });
       try {
@@ -173,7 +176,7 @@ const withMessengerHandler = MessengerPage =>
         // get height of msgContainer before adding new messages
         let prevHeight = msgContainerElement.scrollHeight;
         // add new messages to state
-        await this.setState(prevState => {
+        await this.setMountedState(prevState => {
           const { authUser } = this.props;
           let newMessages = res.data.value.messages;
           // check owner of all new messages
@@ -195,7 +198,7 @@ const withMessengerHandler = MessengerPage =>
           msgContainerElement.scrollHeight - prevHeight;
       } catch (err) {
         // load more fail
-        this.setState({
+        this.setMountedState({
           loadingMore: false,
           error: err
         });
@@ -234,13 +237,13 @@ const withMessengerHandler = MessengerPage =>
     async getMessages(roomId) {
       if (!roomId) return;
       this.loadingRoomId = roomId;
-      this.setState({
+      this.setMountedState({
         loadingMessages: true
       });
       try {
         const resObj = await this.requestGetMessage(roomId);
         if (roomId !== this.loadingRoomId) return;
-        await this.setState({
+        await this.setMountedState({
           loadingMessages: false,
           messages: resObj.messages,
           count: resObj.count,
@@ -248,7 +251,7 @@ const withMessengerHandler = MessengerPage =>
         });
         this.scrollToBottom();
       } catch (err) {
-        this.setState({
+        this.setMountedState({
           loadingMessages: false,
           error: err
         });
@@ -257,7 +260,7 @@ const withMessengerHandler = MessengerPage =>
     }
     handleChange = e => {
       e.persist();
-      this.setState({
+      this.setMountedState({
         currentInput: e.target.value
       });
     };
@@ -275,7 +278,7 @@ const withMessengerHandler = MessengerPage =>
       const timeTicket = String(new Date());
 
       // add new message to list
-      await this.setState(prevState => {
+      await this.setMountedState(prevState => {
         const messages = prevState.messages.concat({
           value: messageValue,
           type: "text",
@@ -310,9 +313,12 @@ const withMessengerHandler = MessengerPage =>
     handleMsgValue(str) {
       return str.trim();
     }
+    setMountedState(props) {
+      if (this._isMounted) this.setState(props);
+    }
     render() {
       return (
-        <MessengerPage
+        <ChatBox
           {...this.state}
           {...this.props}
           handleScroll={this.handleScroll}
@@ -324,4 +330,4 @@ const withMessengerHandler = MessengerPage =>
     }
   };
 
-export default withMessengerHandler;
+export default withChatBoxHandler;

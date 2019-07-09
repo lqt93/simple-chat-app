@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import { makeStyles, createStyles } from "@material-ui/core/styles";
 import { IconButton, Typography } from "@material-ui/core";
 import { Create as CreateIcon } from "@material-ui/icons";
@@ -20,16 +21,18 @@ const useStyles = makeStyles(theme =>
   })
 );
 
-const MsgListHeader = ({ toggleNewConversation }) => {
+const MsgListHeader = () => {
   const classes = useStyles();
   return (
     <div className={classes.msgListHeader}>
       <Typography variant="h6" className={classes.title}>
         Messenger
       </Typography>
-      <IconButton onClick={toggleNewConversation}>
-        <CreateIcon />
-      </IconButton>
+      <Link to="/messenger/new">
+        <IconButton>
+          <CreateIcon />
+        </IconButton>
+      </Link>
     </div>
   );
 };

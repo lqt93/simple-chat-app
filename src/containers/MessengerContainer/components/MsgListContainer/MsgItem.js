@@ -5,10 +5,12 @@ import {
   ListItem,
   ListItemText,
   ListItemAvatar,
-  ListItemIcon,
   Avatar
 } from "@material-ui/core";
-import { AccountCircle as AccountCircleIcon } from "@material-ui/icons";
+import {
+  AccountCircle as AccountCircleIcon,
+  Clear as ClearIcon
+} from "@material-ui/icons";
 import { generateRoomName } from "../../utils/room";
 
 const useStyles = makeStyles(theme =>
@@ -22,11 +24,20 @@ const useStyles = makeStyles(theme =>
       },
       "&:hover": {
         background: "#f1f0f0"
+      },
+      "&:hover $clearIcon": {
+        color: "black",
+        pointerEvents: "auto"
       }
     },
     avatarIcon: {
       width: 50,
       height: 50
+    },
+    clearIcon: {
+      fontSize: 14,
+      color: "transparent",
+      pointerEvents: "none"
     }
   })
 );
@@ -49,7 +60,7 @@ class ListItemLink extends React.PureComponent {
   }
 }
 
-const MsgItem = ({ data, isChosen }) => {
+const MsgItem = ({ data, isChosen, removeRoom }) => {
   const classes = useStyles({
     chosenBackground: isChosen ? "#f1f0f0" : "white"
   });
@@ -57,7 +68,7 @@ const MsgItem = ({ data, isChosen }) => {
   const roomName = generateRoomName(data);
   return (
     <ListItemLink
-      to={`/messenger/t/${_id}`}
+      to={`/messenger/${_id !== "new" ? `t/${_id}` : "new"}`}
       className={classes.msgItem}
       component
     >
@@ -67,6 +78,9 @@ const MsgItem = ({ data, isChosen }) => {
         </Avatar>
       </ListItemAvatar>
       <ListItemText primary={roomName} />
+      {_id === "new" && (
+        <ClearIcon className={classes.clearIcon} onClick={removeRoom("new")} />
+      )}
     </ListItemLink>
   );
 };

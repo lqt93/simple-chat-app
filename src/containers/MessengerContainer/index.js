@@ -27,42 +27,15 @@ const Messenger = ({
         />
         <Route
           path={`${thisPath}/new`}
-          render={routeProps => <NewPage {...rest} {...routeProps} />}
+          render={routeProps => <MessengerPage {...rest} {...routeProps} />}
         />
         <Route
-          path={`${thisPath}/t`}
-          render={routeProps => <ThreadPage {...rest} {...routeProps} />}
+          path={`${thisPath}/t/:id`}
+          render={routeProps => <MessengerPage {...rest} {...routeProps} />}
         />
-        <Route component={NotFound} />
+        <Route component={NotFoundMessenger} />
       </Switch>
     </PrivateLayout>
-  );
-};
-
-const ThreadPage = props => {
-  const { match } = props;
-  return (
-    <Switch>
-      <Route
-        path={`${match.path}/:id`}
-        render={routeProps => <MessengerPage {...props} {...routeProps} />}
-      />
-      <Route component={NotFoundMessenger} />
-    </Switch>
-  );
-};
-
-const NewPage = props => {
-  const { match } = props;
-  return (
-    <Switch>
-      <Route
-        path={`${match.path}`}
-        exact
-        render={routeProps => <MessengerPage {...props} {...routeProps} />}
-      />
-      <Route component={NotFoundMessenger} />
-    </Switch>
   );
 };
 

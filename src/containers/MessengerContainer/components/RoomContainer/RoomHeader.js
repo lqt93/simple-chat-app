@@ -24,7 +24,7 @@ const useStyles = makeStyles(theme =>
   })
 );
 
-const RoomHeader = ({ currentRoom, isOpenFindNameInput }) => {
+const RoomHeader = ({ currentRoom, choosingNewMessage }) => {
   const classes = useStyles();
   return (
     <div className={classes.roomHeader}>
@@ -33,10 +33,10 @@ const RoomHeader = ({ currentRoom, isOpenFindNameInput }) => {
           <KeyboardArrowLeft />
         </IconButton>
       </Link>
-      {currentRoom && !isOpenFindNameInput && (
+      {currentRoom && !choosingNewMessage && (
         <strong>{generateRoomName(currentRoom)}</strong>
       )}
-      {isOpenFindNameInput && (
+      {choosingNewMessage && (
         <input
           style={{ width: 250 }}
           placeholder="Type the name of a person or group"
