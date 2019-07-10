@@ -65,7 +65,8 @@ const withMessengerHandler = Messenger =>
     };
     setWindowSize() {
       this.setMountedState({
-        windowHeight: window.innerHeight
+        windowHeight: window.innerHeight,
+        windowWidth: window.innerWidth
       });
     }
     removeRoom = id => () => {
@@ -77,11 +78,16 @@ const withMessengerHandler = Messenger =>
       this.setState(
         { choosingNewMessage: false, showingNewMessage: false },
         () => {
-          this.props.history.push(
-            `/messenger/t/${this.state.rooms[0].room._id}`
-          );
+          if (this.state.windowWidth > 400) {
+            this.props.history.push(
+              `/messenger/t/${this.state.rooms[0].room._id}`
+            );
+          }
         }
       );
+    };
+    chooseNewConversation = () => {
+      this.props.history.push("/messenger/new");
     };
     analyzeRoutes = async () => {
       const { pathname } = this.props.location;
@@ -191,6 +197,7 @@ const withMessengerHandler = Messenger =>
           chooseCurrentRoom={this.chooseCurrentRoom}
           updateMsgTree={this.updateMsgTree}
           removeRoom={this.removeRoom}
+          chooseNewConversation={this.chooseNewConversation}
         />
       );
     }

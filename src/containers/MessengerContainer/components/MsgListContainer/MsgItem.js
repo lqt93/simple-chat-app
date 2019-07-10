@@ -16,6 +16,7 @@ import { generateRoomName } from "../../utils/room";
 const useStyles = makeStyles(theme =>
   createStyles({
     msgItem: {
+      position: "relative",
       cursor: "pointer",
       background: props => props.chosenBackground,
       "& a": {
@@ -35,7 +36,10 @@ const useStyles = makeStyles(theme =>
       height: 50
     },
     clearIcon: {
-      fontSize: 14,
+      fontSize: 18,
+      position: "absolute",
+      right: theme.spacing(1),
+      top: theme.spacing(2),
       color: "transparent",
       pointerEvents: "none"
     }
@@ -60,15 +64,10 @@ class ListItemLink extends React.PureComponent {
   }
 }
 
-const MsgItem = ({ data, isChosen, removeRoom }) => {
-  const classes = useStyles({
-    chosenBackground: isChosen ? "#f1f0f0" : "white"
-  });
-  const { _id } = data;
-  const roomName = generateRoomName(data);
+const RoomItem = ({ classes, roomName, _id }) => {
   return (
     <ListItemLink
-      to={`/messenger/${_id !== "new" ? `t/${_id}` : "new"}`}
+      to={`/messenger/t/${_id}`}
       className={classes.msgItem}
       component
     >
@@ -78,11 +77,41 @@ const MsgItem = ({ data, isChosen, removeRoom }) => {
         </Avatar>
       </ListItemAvatar>
       <ListItemText primary={roomName} />
-      {_id === "new" && (
-        <ClearIcon className={classes.clearIcon} onClick={removeRoom("new")} />
-      )}
     </ListItemLink>
   );
+};
+
+const NewMsgItem = ({ classes, removeRoom, chooseNewConversation }) => {
+  return (
+    <div className={classes.msgItem}>
+      <ListItem onClick={chooseNewConversation}>
+        <ListItemAvatar>
+          <Avatar>
+            <AccountCircleIcon className={classes.avatarIcon} />
+          </Avatar>
+        </ListItemAvatar>
+        <ListItemText primary="New message" />
+      </ListItem>
+      <ClearIcon className={classes.clearIcon} onClick={removeRoom("new")} />
+    </div>
+  );
+};
+
+const MsgItem = ({ data, isChosen, removeRoom, chooseNewConversation }) => {
+  const classes = useStyles({
+    chosenBackground: isChosen ? "#f1f0f0" : "white"
+  });
+  const { _id } = data;
+  const roomName = generateRoomName(data);
+  if (_id === "new")
+    return (
+      <NewMsgItem
+        classes={classes}
+        removeRoom={removeRoom}
+        chooseNewConversation={chooseNewConversation}
+      />
+    );
+  return <RoomItem classes={classes} roomName={roomName} _id={_id} />;
 };
 
 export default MsgItem;
