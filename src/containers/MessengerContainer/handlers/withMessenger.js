@@ -9,7 +9,8 @@ const INITIAL_STATE = {
   socketLoaded: false,
   showingNewMessage: false,
   choosingNewMessage: false,
-  receivers: []
+  receivers: [],
+  chosenReceiverId: null
 };
 
 const withMessengerHandler = Messenger =>
@@ -26,6 +27,8 @@ const withMessengerHandler = Messenger =>
       // get window's size
       this.setWindowSize();
       window.addEventListener("resize", this.delayedCallback);
+      // handle key down
+      window.addEventListener("keydown", this.handleKeyDown);
       // connect socket before getting rooms
       await this.handleSocket();
       // get list of rooms
@@ -34,6 +37,9 @@ const withMessengerHandler = Messenger =>
     };
     componentWillUnmount() {
       this._isMounted = false;
+      // remove event listener
+      window.removeEventListener("resize", this.delayedCallback);
+      window.removeEventListener("keydown", this.handleKeyDown);
       // disconnect socket
       disconnectSocket();
     }
@@ -128,6 +134,25 @@ const withMessengerHandler = Messenger =>
     };
     chooseReceiverToRemove = chosenReceiverId => () => {
       this.setState({ chosenReceiverId });
+    };
+    // handle window keydown to remove a receiver after choosing
+    handleKeyDown = e => {
+      if (e.isComposing || e.keyCode === 229) {
+        return;
+      }
+      const { chosenReceiverId } = this.state;
+      if (!chosenReceiverId) return;
+      if (e.keyCode === 8) {
+        this.setState(prevState => {
+          const receivers = prevState.receivers.filter(
+            user => user._id !== chosenReceiverId
+          );
+          return {
+            receivers,
+            chosenReceiverId: null
+          };
+        });
+      }
     };
     //=====================================
     // handle path
