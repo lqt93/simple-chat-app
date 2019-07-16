@@ -2,7 +2,7 @@ import React from "react";
 import { makeStyles, createStyles } from "@material-ui/core/styles";
 import RoomHeader from "./RoomHeader";
 import RoomBody from "./RoomBody";
-import NewMessageBody from "./NewMessageBody";
+import NewMsgBody from "./NewMsgBody";
 
 const useStyles = makeStyles(theme =>
   createStyles({
@@ -26,7 +26,7 @@ const RoomContainer = props => {
     <div className={classes.roomContainer}>
       <RoomHeader {...props} />
       {currentRoomId && <RoomBody {...props} />}
-      {choosingNewMessage && <NewMessageBody {...props} />}
+      {choosingNewMessage && <NewMsgBody {...props} />}
     </div>
   );
 };

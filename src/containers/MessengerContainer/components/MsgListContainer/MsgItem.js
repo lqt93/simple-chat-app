@@ -81,7 +81,12 @@ const RoomItem = ({ classes, roomName, _id }) => {
   );
 };
 
-const NewMsgItem = ({ classes, removeRoom, chooseNewConversation }) => {
+const NewMsgItem = ({
+  classes,
+  removeRoom,
+  chooseNewConversation,
+  roomName
+}) => {
   return (
     <div className={classes.msgItem}>
       <ListItem onClick={chooseNewConversation}>
@@ -90,7 +95,9 @@ const NewMsgItem = ({ classes, removeRoom, chooseNewConversation }) => {
             <AccountCircleIcon className={classes.avatarIcon} />
           </Avatar>
         </ListItemAvatar>
-        <ListItemText primary="New message" />
+        <ListItemText
+          primary={`New message${roomName ? ` to ${roomName}` : ""}`}
+        />
       </ListItem>
       <ClearIcon className={classes.clearIcon} onClick={removeRoom("new")} />
     </div>
@@ -109,6 +116,7 @@ const MsgItem = ({ data, isChosen, removeRoom, chooseNewConversation }) => {
         classes={classes}
         removeRoom={removeRoom}
         chooseNewConversation={chooseNewConversation}
+        roomName={roomName}
       />
     );
   return <RoomItem classes={classes} roomName={roomName} _id={_id} />;

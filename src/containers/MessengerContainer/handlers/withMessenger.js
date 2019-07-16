@@ -4,10 +4,12 @@ import request from "../../../utils/request";
 import { socket, connectSocket, disconnectSocket } from "../../../utils/socket";
 
 const INITIAL_STATE = {
-  isOpenFindNameInput: false,
   msgTree: {},
   rooms: [],
-  socketLoaded: false
+  socketLoaded: false,
+  showingNewMessage: false,
+  choosingNewMessage: false,
+  receivers: []
 };
 
 const withMessengerHandler = Messenger =>
@@ -20,12 +22,12 @@ const withMessengerHandler = Messenger =>
     }
     componentDidMount = async () => {
       this._isMounted = true;
-      // get window's height
+      // get window's size
       this.setWindowSize();
       window.addEventListener("resize", this.delayedCallback);
       // connect socket before getting rooms
       await this.handleSocket();
-
+      // get list of rooms
       await this.getPrivateRooms();
       this.analyzeRoutes();
     };
@@ -60,6 +62,9 @@ const withMessengerHandler = Messenger =>
         });
       }
     }
+    //=====================================
+    // handle window size
+    //=====================================
     windowResize = () => {
       this.setWindowSize();
     };
@@ -74,6 +79,9 @@ const withMessengerHandler = Messenger =>
         this.closeNewConversation();
       }
     };
+    //=====================================
+    // handle creating new message
+    //=====================================
     closeNewConversation = () => {
       this.setState(
         { choosingNewMessage: false, showingNewMessage: false },
@@ -89,10 +97,37 @@ const withMessengerHandler = Messenger =>
     chooseNewConversation = () => {
       this.props.history.push("/messenger/new");
     };
+    // TODO
+    addNewReceiver = person => {
+      this.setState(prevState => {
+        return {
+          receivers: prevState.push(person)
+        };
+      });
+    };
+    removeReceiver = removingId => {
+      this.setState(prevState => {
+        const lastReceivers = prevState.receivers;
+        let targetId =
+          removingId === "last"
+            ? lastReceivers[lastReceivers.length - 1]._id
+            : removingId;
+        const receivers = lastReceivers.filter(item => item._id !== targetId);
+        return {
+          receivers
+        };
+      });
+    };
+    //=====================================
+    // handle path
+    //=====================================
     analyzeRoutes = async () => {
       const { pathname } = this.props.location;
+
+      // handle root path
       if (pathname === "/messenger") return;
 
+      // handle new message path
       if (pathname === "/messenger/new") {
         this.setMountedState({
           choosingNewMessage: true,
@@ -117,6 +152,10 @@ const withMessengerHandler = Messenger =>
         }
       }
     };
+    //=====================================
+    // handle current room
+    //=====================================
+    // check room's id in path
     checkRoomId = async roomId =>
       new Promise(async (resolve, reject) => {
         try {
@@ -142,6 +181,12 @@ const withMessengerHandler = Messenger =>
         currentRoom: foundRoom.room
       });
     };
+    chooseCurrentRoom = roomId => () => {
+      this.setMountedState({ currentRoomId: roomId });
+    };
+    //=====================================
+    // handle list of rooms
+    //=====================================
     getPrivateRooms = () =>
       new Promise(async (resolve, reject) => {
         try {
@@ -165,9 +210,9 @@ const withMessengerHandler = Messenger =>
           reject(error);
         }
       });
-    chooseCurrentRoom = roomId => () => {
-      this.setMountedState({ currentRoomId: roomId });
-    };
+    //=====================================
+    // handle socket
+    //=====================================
     handleSocket = async () => {
       await connectSocket();
       // socket.emit("join_room", roomId);
@@ -175,13 +220,14 @@ const withMessengerHandler = Messenger =>
         socketLoaded: true
       });
     };
+    //=====================================
+    // others
+    //=====================================
     updateMsgTree = (id, data) => {
-      this.setMountedState(prevState => {
-        return {
-          msgTree: {
-            [id]: data
-          }
-        };
+      this.setMountedState({
+        msgTree: {
+          [id]: data
+        }
       });
     };
     setMountedState(props) {
@@ -198,6 +244,8 @@ const withMessengerHandler = Messenger =>
           updateMsgTree={this.updateMsgTree}
           removeRoom={this.removeRoom}
           chooseNewConversation={this.chooseNewConversation}
+          addNewReceiver={this.addNewReceiver}
+          removeReceiver={this.removeReceiver}
         />
       );
     }

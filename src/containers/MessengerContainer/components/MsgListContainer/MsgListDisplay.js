@@ -18,7 +18,8 @@ const MsgListDisplay = ({
   choosingNewMessage,
   showingNewMessage,
   removeRoom,
-  chooseNewConversation
+  chooseNewConversation,
+  receivers
 }) => {
   const classes = useStyles();
   return (
@@ -31,7 +32,8 @@ const MsgListDisplay = ({
           <MsgItem
             key="new messge"
             data={{
-              _id: "new"
+              _id: "new",
+              members: receivers
             }}
             isChosen={choosingNewMessage}
             removeRoom={removeRoom}

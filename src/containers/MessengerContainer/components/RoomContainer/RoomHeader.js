@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { IconButton } from "@material-ui/core";
 import { KeyboardArrowLeft } from "@material-ui/icons";
 import { generateRoomName } from "../../utils/room";
+import NewMsgInput from "./NewMsgInput";
 
 const useStyles = makeStyles(theme =>
   createStyles({
@@ -24,7 +25,7 @@ const useStyles = makeStyles(theme =>
   })
 );
 
-const RoomHeader = ({ currentRoom, choosingNewMessage }) => {
+const RoomHeader = ({ currentRoom, choosingNewMessage, receivers }) => {
   const classes = useStyles();
   return (
     <div className={classes.roomHeader}>
@@ -36,12 +37,7 @@ const RoomHeader = ({ currentRoom, choosingNewMessage }) => {
       {currentRoom && !choosingNewMessage && (
         <strong>{generateRoomName(currentRoom)}</strong>
       )}
-      {choosingNewMessage && (
-        <input
-          style={{ width: 250 }}
-          placeholder="Type the name of a person or group"
-        />
-      )}
+      {choosingNewMessage && <NewMsgInput receivers={receivers} />}
     </div>
   );
 };
