@@ -10,6 +10,7 @@ const useStyles = makeStyles(theme =>
   createStyles({
     roomHeader: {
       minHeight: 50,
+      position: "relative",
       display: "flex",
       flexDirection: "row",
       alignItems: "center",
@@ -21,14 +22,35 @@ const useStyles = makeStyles(theme =>
       [theme.breakpoints.up("sm")]: {
         display: "none"
       }
+    },
+    banner: {
+      position: "absolute",
+      top: 0,
+      left: 0,
+      width: "100%",
+      height: "100%",
+      zIndex: 1
     }
   })
 );
 
-const RoomHeader = ({ currentRoom, choosingNewMessage, receivers }) => {
+const RoomHeader = ({
+  currentRoom,
+  choosingNewMessage,
+  receivers,
+  chooseReceiverToRemove,
+  chosenReceiverId,
+  newMsgInputRef,
+  clickOnNewMsgInput,
+  location
+}) => {
   const classes = useStyles();
+  const { pathname } = location;
   return (
     <div className={classes.roomHeader}>
+      {pathname === "/messenger/new" && (
+        <div className={classes.banner} onClick={clickOnNewMsgInput} />
+      )}
       <Link to="/messenger">
         <IconButton className={classes.backButton}>
           <KeyboardArrowLeft />
@@ -37,7 +59,14 @@ const RoomHeader = ({ currentRoom, choosingNewMessage, receivers }) => {
       {currentRoom && !choosingNewMessage && (
         <strong>{generateRoomName(currentRoom)}</strong>
       )}
-      {choosingNewMessage && <NewMsgInput receivers={receivers} />}
+      {choosingNewMessage && (
+        <NewMsgInput
+          receivers={receivers}
+          chooseReceiverToRemove={chooseReceiverToRemove}
+          chosenReceiverId={chosenReceiverId}
+          ref={newMsgInputRef}
+        />
+      )}
     </div>
   );
 };

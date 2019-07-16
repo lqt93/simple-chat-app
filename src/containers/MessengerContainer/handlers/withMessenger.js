@@ -22,6 +22,7 @@ const withMessengerHandler = Messenger =>
     }
     componentDidMount = async () => {
       this._isMounted = true;
+      this.newMsgInputRef = React.createRef();
       // get window's size
       this.setWindowSize();
       window.addEventListener("resize", this.delayedCallback);
@@ -97,7 +98,14 @@ const withMessengerHandler = Messenger =>
     chooseNewConversation = () => {
       this.props.history.push("/messenger/new");
     };
-    // TODO
+    // handle new msg input
+    handleNewMsgInput = e => {};
+    clickOnNewMsgInput = () => {
+      const { pathname } = this.props.location;
+      if (pathname !== "/messenger/new") return;
+      this.newMsgInputRef.current.focus();
+    };
+    // handle receivers
     addNewReceiver = person => {
       this.setState(prevState => {
         return {
@@ -117,6 +125,9 @@ const withMessengerHandler = Messenger =>
           receivers
         };
       });
+    };
+    chooseReceiverToRemove = chosenReceiverId => () => {
+      this.setState({ chosenReceiverId });
     };
     //=====================================
     // handle path
@@ -239,6 +250,7 @@ const withMessengerHandler = Messenger =>
         <Messenger
           {...this.state}
           {...this.props}
+          newMsgInputRef={this.newMsgInputRef}
           closeNewConversation={this.closeNewConversation}
           chooseCurrentRoom={this.chooseCurrentRoom}
           updateMsgTree={this.updateMsgTree}
@@ -246,6 +258,8 @@ const withMessengerHandler = Messenger =>
           chooseNewConversation={this.chooseNewConversation}
           addNewReceiver={this.addNewReceiver}
           removeReceiver={this.removeReceiver}
+          chooseReceiverToRemove={this.chooseReceiverToRemove}
+          clickOnNewMsgInput={this.clickOnNewMsgInput}
         />
       );
     }
