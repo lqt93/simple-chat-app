@@ -1,5 +1,5 @@
 import React from "react";
-import { throttle } from "throttle-debounce";
+import { throttle, debounce } from "throttle-debounce";
 import request from "../../../utils/request";
 import { socket, connectSocket, disconnectSocket } from "../../../utils/socket";
 
@@ -9,9 +9,29 @@ const INITIAL_STATE = {
   socketLoaded: false,
   showingNewMessage: false,
   choosingNewMessage: false,
-  receivers: [],
+  receivers: [
+    {
+      _id: "123",
+      fullName: "Tester 1",
+      username: "tester1",
+      email: "tester1@simplechat.simplechat"
+    },
+    {
+      _id: "421",
+      fullName: "Tester-2",
+      username: "tester2",
+      email: "tester2@simplechat.simplechat"
+    },
+    {
+      _id: "333",
+      fullName: "Tester-3",
+      username: "tester3",
+      email: "tester3@simplechat.simplechat"
+    }
+  ],
   chosenReceiverId: null,
-  searchValue: ""
+  searchValue: "",
+  searchList: []
 };
 
 const withMessengerHandler = Messenger =>
@@ -20,14 +40,15 @@ const withMessengerHandler = Messenger =>
       super(props);
       this.state = { ...INITIAL_STATE, windowHeight: null };
       this._isMounted = false;
-      this.delayedCallback = throttle(500, this.windowResize);
+      this.delayedResize = throttle(500, this.windowResize);
+      this.autocompleteSearchThrottled = debounce(500, this.autocompleteSearch);
     }
     componentDidMount = async () => {
       this._isMounted = true;
       this.newMsgInputRef = React.createRef();
       // get window's size
       this.setWindowSize();
-      window.addEventListener("resize", this.delayedCallback);
+      window.addEventListener("resize", this.delayedResize);
       // handle key down
       window.addEventListener("keydown", this.handleKeyDown);
       // connect socket before getting rooms
@@ -39,7 +60,7 @@ const withMessengerHandler = Messenger =>
     componentWillUnmount() {
       this._isMounted = false;
       // remove event listener
-      window.removeEventListener("resize", this.delayedCallback);
+      window.removeEventListener("resize", this.delayedResize);
       window.removeEventListener("keydown", this.handleKeyDown);
       // disconnect socket
       disconnectSocket();
@@ -108,7 +129,35 @@ const withMessengerHandler = Messenger =>
     // handle new msg input
     handleNewMsgInput = e => {
       e.persist();
-      this.setMountedState({ searchValue: e.target.value });
+      const keyword = e.target.value;
+      this.setMountedState({ searchValue: keyword });
+      if (!keyword) return;
+      this.autocompleteSearchThrottled(keyword);
+    };
+    autocompleteSearch = async keyword => {
+      try {
+        let searchCache = JSON.parse(localStorage.getItem("searchCache"));
+        let searchList = [];
+        if (!searchCache || (searchCache && !searchCache[keyword])) {
+          const query = encodeURI(`?keyword=${keyword}`);
+          const res = await request({
+            url: `/users${query}`,
+            method: "GET"
+          });
+          searchList = res.data.value;
+          if (searchList.length > 0) {
+            if (!searchCache) searchCache = {};
+            searchCache[keyword] = searchList;
+            localStorage.setItem("searchCache", JSON.stringify(searchCache));
+          }
+        } else {
+          searchList = searchCache[keyword];
+        }
+        if (searchList.length === 0) return;
+        this.setState({ searchList });
+      } catch (error) {
+        console.log("error", error);
+      }
     };
     handleKeyDownNewMsgInput = e => {
       if (e.isComposing || e.keyCode === 229) {
