@@ -113,7 +113,7 @@ const withMessengerHandler = Messenger =>
     //=====================================
     closeNewConversation = () => {
       this.setState(
-        { choosingNewMessage: false, showingNewMessage: false },
+        { choosingNewMessage: false, showingNewMessage: false, receivers: [] },
         () => {
           if (this.state.windowWidth > 400) {
             this.props.history.push(
