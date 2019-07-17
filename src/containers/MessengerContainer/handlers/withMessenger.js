@@ -10,7 +10,8 @@ const INITIAL_STATE = {
   showingNewMessage: false,
   choosingNewMessage: false,
   receivers: [],
-  chosenReceiverId: null
+  chosenReceiverId: null,
+  searchValue: ""
 };
 
 const withMessengerHandler = Messenger =>
@@ -105,7 +106,22 @@ const withMessengerHandler = Messenger =>
       this.props.history.push("/messenger/new");
     };
     // handle new msg input
-    handleNewMsgInput = e => {};
+    handleNewMsgInput = e => {
+      e.persist();
+      this.setMountedState({ searchValue: e.target.value });
+    };
+    handleKeyDownNewMsgInput = e => {
+      if (e.isComposing || e.keyCode === 229) {
+        return;
+      }
+      if (
+        e.keyCode === 8 &&
+        !this.state.searchValue &&
+        this.state.receivers.length > 0
+      ) {
+        this.removeReceiver("last");
+      }
+    };
     clickOnNewMsgInput = () => {
       const { pathname } = this.props.location;
       if (pathname !== "/messenger/new") return;
@@ -119,21 +135,25 @@ const withMessengerHandler = Messenger =>
         };
       });
     };
-    removeReceiver = removingId => {
+    removeReceiver = position => {
       this.setState(prevState => {
         const lastReceivers = prevState.receivers;
         let targetId =
-          removingId === "last"
+          position === "last"
             ? lastReceivers[lastReceivers.length - 1]._id
-            : removingId;
+            : prevState.chosenReceiverId;
         const receivers = lastReceivers.filter(item => item._id !== targetId);
         return {
-          receivers
+          receivers,
+          chosenReceiverId: null
         };
       });
     };
     chooseReceiverToRemove = chosenReceiverId => () => {
       this.setState({ chosenReceiverId });
+    };
+    unsetReceiverId = e => {
+      this.setState({ chosenReceiverId: null });
     };
     // handle window keydown to remove a receiver after choosing
     handleKeyDown = e => {
@@ -143,15 +163,7 @@ const withMessengerHandler = Messenger =>
       const { chosenReceiverId } = this.state;
       if (!chosenReceiverId) return;
       if (e.keyCode === 8) {
-        this.setState(prevState => {
-          const receivers = prevState.receivers.filter(
-            user => user._id !== chosenReceiverId
-          );
-          return {
-            receivers,
-            chosenReceiverId: null
-          };
-        });
+        this.removeReceiver();
       }
     };
     //=====================================
@@ -285,6 +297,9 @@ const withMessengerHandler = Messenger =>
           removeReceiver={this.removeReceiver}
           chooseReceiverToRemove={this.chooseReceiverToRemove}
           clickOnNewMsgInput={this.clickOnNewMsgInput}
+          handleNewMsgInput={this.handleNewMsgInput}
+          handleKeyDownNewMsgInput={this.handleKeyDownNewMsgInput}
+          unsetReceiverId={this.unsetReceiverId}
         />
       );
     }

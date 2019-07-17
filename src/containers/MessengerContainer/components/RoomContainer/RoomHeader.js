@@ -41,7 +41,11 @@ const RoomHeader = ({
   chooseReceiverToRemove,
   chosenReceiverId,
   newMsgInputRef,
+  handleNewMsgInput,
+  handleKeyDownNewMsgInput,
+  searchValue,
   clickOnNewMsgInput,
+  unsetReceiverId,
   location
 }) => {
   const classes = useStyles();
@@ -63,7 +67,11 @@ const RoomHeader = ({
         <NewMsgInput
           receivers={receivers}
           chooseReceiverToRemove={chooseReceiverToRemove}
+          unsetReceiverId={unsetReceiverId}
           chosenReceiverId={chosenReceiverId}
+          handleNewMsgInput={handleNewMsgInput}
+          handleKeyDownNewMsgInput={handleKeyDownNewMsgInput}
+          searchValue={searchValue}
           ref={newMsgInputRef}
         />
       )}

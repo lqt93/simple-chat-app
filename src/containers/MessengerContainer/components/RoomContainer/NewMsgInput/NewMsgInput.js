@@ -23,7 +23,18 @@ const useStyles = makeStyles(theme =>
 );
 
 const NewMsgInput = React.forwardRef(
-  ({ receivers, chooseReceiverToRemove, chosenReceiverId }, ref) => {
+  (
+    {
+      receivers,
+      chooseReceiverToRemove,
+      chosenReceiverId,
+      handleNewMsgInput,
+      searchValue,
+      handleKeyDownNewMsgInput,
+      unsetReceiverId
+    },
+    ref
+  ) => {
     const hasReceiver = receivers.length > 0;
     const classes = useStyles({ hasReceiver });
     return (
@@ -32,10 +43,14 @@ const NewMsgInput = React.forwardRef(
           receivers={receivers}
           chosenReceiverId={chosenReceiverId}
           chooseReceiverToRemove={chooseReceiverToRemove}
+          unsetReceiverId={unsetReceiverId}
         />
         <input
           autoFocus
           ref={ref}
+          value={searchValue}
+          onChange={handleNewMsgInput}
+          onKeyDown={handleKeyDownNewMsgInput}
           className={classes.newMsgInput}
           placeholder={!hasReceiver ? "Type the name of a person or group" : ""}
         />
