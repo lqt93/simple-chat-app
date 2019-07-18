@@ -31,7 +31,9 @@ const INITIAL_STATE = {
   ],
   chosenReceiverId: null,
   searchValue: "",
-  searchList: []
+  searchList: [],
+  loadingSearchList: false,
+  isNoResult: false
 };
 
 const withMessengerHandler = Messenger =>
@@ -131,13 +133,21 @@ const withMessengerHandler = Messenger =>
       e.persist();
       const keyword = e.target.value;
       this.setMountedState({ searchValue: keyword });
-      if (!keyword) return;
       this.autocompleteSearchThrottled(keyword);
     };
     autocompleteSearch = async keyword => {
+      if (!keyword)
+        return this.setMountedState({
+          isNoResult: false,
+          searchList: []
+        });
       try {
         let searchCache = JSON.parse(localStorage.getItem("searchCache"));
         let searchList = [];
+        this.setMountedState({
+          loadingSearchList: true,
+          isNoResult: false
+        });
         if (!searchCache || (searchCache && !searchCache[keyword])) {
           const query = encodeURI(`?keyword=${keyword}`);
           const res = await request({
@@ -153,11 +163,27 @@ const withMessengerHandler = Messenger =>
         } else {
           searchList = searchCache[keyword];
         }
-        if (searchList.length === 0) return;
-        this.setState({ searchList });
+        this.setMountedState({
+          searchList,
+          loadingSearchList: false,
+          isNoResult: searchList.length === 0
+        });
       } catch (error) {
         console.log("error", error);
+        this.setMountedState({
+          loadingSearchList: false
+        });
       }
+    };
+    closeSearchDropdown = () => {
+      this.setMountedState({
+        searchList: [],
+        loadingSearchList: false,
+        isNoResult: false
+      });
+    };
+    onFocusNewMsgInput = () => {
+      this.autocompleteSearch(this.state.searchValue);
     };
     handleKeyDownNewMsgInput = e => {
       if (e.isComposing || e.keyCode === 229) {
@@ -349,6 +375,8 @@ const withMessengerHandler = Messenger =>
           handleNewMsgInput={this.handleNewMsgInput}
           handleKeyDownNewMsgInput={this.handleKeyDownNewMsgInput}
           unsetReceiverId={this.unsetReceiverId}
+          closeSearchDropdown={this.closeSearchDropdown}
+          onFocusNewMsgInput={this.onFocusNewMsgInput}
         />
       );
     }

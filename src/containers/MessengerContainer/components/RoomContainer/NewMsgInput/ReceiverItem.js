@@ -1,5 +1,6 @@
 import React from "react";
 import { makeStyles, createStyles } from "@material-ui/core/styles";
+import { ListItem } from "@material-ui/core";
 
 const useStyles = makeStyles(theme =>
   createStyles({
@@ -10,18 +11,24 @@ const useStyles = makeStyles(theme =>
       padding: "4px 8px",
       marginRight: theme.spacing(1),
       borderRadius: theme.shape.borderRadius,
-      cursor: "default"
+      cursor: "default",
+      width: "auto"
     }
   })
 );
 
-const ReceiverItem = ({ data, isChosen, onClick }) => {
+const ReceiverItem = ({ data, isChosen, chooseReceiver }) => {
   const classes = useStyles({ isChosen });
   const { fullName } = data;
   return (
-    <div className={classes.receiverItem} onClick={onClick}>
+    <ListItem
+      className={classes.receiverItem}
+      onClick={chooseReceiver}
+      onFocus={chooseReceiver}
+      tabIndex={0}
+    >
       {fullName}
-    </div>
+    </ListItem>
   );
 };
 

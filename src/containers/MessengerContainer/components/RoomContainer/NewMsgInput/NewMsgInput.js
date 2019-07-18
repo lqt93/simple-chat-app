@@ -1,12 +1,14 @@
 import React from "react";
 import { makeStyles, createStyles } from "@material-ui/core/styles";
 import ReceiverList from "./ReceiverList";
+import SearchDropdown from "./SearchDropdown";
 
 const useStyles = makeStyles(theme =>
   createStyles({
     inputContainer: {
       width: "100%",
-      display: "flex"
+      display: "flex",
+      position: "relative"
     },
     newMsgInput: {
       minWidth: props => (props.hasReceiver ? 60 : 250),
@@ -31,7 +33,12 @@ const NewMsgInput = React.forwardRef(
       handleNewMsgInput,
       searchValue,
       handleKeyDownNewMsgInput,
-      unsetReceiverId
+      unsetReceiverId,
+      searchList,
+      loadingSearchList,
+      isNoResult,
+      closeSearchDropdown,
+      onFocusNewMsgInput
     },
     ref
   ) => {
@@ -48,11 +55,18 @@ const NewMsgInput = React.forwardRef(
         <input
           autoFocus
           ref={ref}
+          onFocus={onFocusNewMsgInput}
+          onBlur={closeSearchDropdown}
           value={searchValue}
           onChange={handleNewMsgInput}
           onKeyDown={handleKeyDownNewMsgInput}
           className={classes.newMsgInput}
           placeholder={!hasReceiver ? "Type the name of a person or group" : ""}
+        />
+        <SearchDropdown
+          searchList={searchList}
+          loadingSearchList={loadingSearchList}
+          isNoResult={isNoResult}
         />
       </div>
     );

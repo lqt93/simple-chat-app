@@ -35,18 +35,12 @@ const useStyles = makeStyles(theme =>
 );
 
 const RoomHeader = ({
+  location,
   currentRoom,
   choosingNewMessage,
-  receivers,
-  chooseReceiverToRemove,
-  chosenReceiverId,
-  newMsgInputRef,
-  handleNewMsgInput,
-  handleKeyDownNewMsgInput,
-  searchValue,
   clickOnNewMsgInput,
-  unsetReceiverId,
-  location
+  newMsgInputRef,
+  ...rest
 }) => {
   const classes = useStyles();
   const { pathname } = location;
@@ -63,18 +57,7 @@ const RoomHeader = ({
       {currentRoom && !choosingNewMessage && (
         <strong>{generateRoomName(currentRoom)}</strong>
       )}
-      {choosingNewMessage && (
-        <NewMsgInput
-          receivers={receivers}
-          chooseReceiverToRemove={chooseReceiverToRemove}
-          unsetReceiverId={unsetReceiverId}
-          chosenReceiverId={chosenReceiverId}
-          handleNewMsgInput={handleNewMsgInput}
-          handleKeyDownNewMsgInput={handleKeyDownNewMsgInput}
-          searchValue={searchValue}
-          ref={newMsgInputRef}
-        />
-      )}
+      {choosingNewMessage && <NewMsgInput {...rest} ref={newMsgInputRef} />}
     </div>
   );
 };

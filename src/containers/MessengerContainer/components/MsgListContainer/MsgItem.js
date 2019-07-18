@@ -88,7 +88,7 @@ const NewMsgItem = ({
   roomName
 }) => {
   return (
-    <div className={classes.msgItem}>
+    <div tabIndex={0} className={classes.msgItem}>
       <ListItem onClick={chooseNewConversation}>
         <ListItemAvatar>
           <Avatar>
