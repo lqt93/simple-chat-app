@@ -30,7 +30,7 @@ const NewMsgInput = React.forwardRef(
       receivers,
       chooseReceiverToRemove,
       chosenReceiverId,
-      handleNewMsgInput,
+      handleSearchUserInput,
       searchValue,
       handleKeyDownNewMsgInput,
       unsetReceiverId,
@@ -58,7 +58,7 @@ const NewMsgInput = React.forwardRef(
           onFocus={onFocusNewMsgInput}
           onBlur={closeSearchDropdown}
           value={searchValue}
-          onChange={handleNewMsgInput}
+          onChange={handleSearchUserInput}
           onKeyDown={handleKeyDownNewMsgInput}
           className={classes.newMsgInput}
           placeholder={!hasReceiver ? "Type the name of a person or group" : ""}

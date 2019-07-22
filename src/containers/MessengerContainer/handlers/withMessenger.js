@@ -129,7 +129,7 @@ const withMessengerHandler = Messenger =>
       this.props.history.push("/messenger/new");
     };
     // handle new msg input
-    handleNewMsgInput = e => {
+    handleSearchUserInput = e => {
       e.persist();
       const keyword = e.target.value;
       this.setMountedState({ searchValue: keyword });
@@ -372,7 +372,7 @@ const withMessengerHandler = Messenger =>
           removeReceiver={this.removeReceiver}
           chooseReceiverToRemove={this.chooseReceiverToRemove}
           clickOnNewMsgInput={this.clickOnNewMsgInput}
-          handleNewMsgInput={this.handleNewMsgInput}
+          handleSearchUserInput={this.handleSearchUserInput}
           handleKeyDownNewMsgInput={this.handleKeyDownNewMsgInput}
           unsetReceiverId={this.unsetReceiverId}
           closeSearchDropdown={this.closeSearchDropdown}
