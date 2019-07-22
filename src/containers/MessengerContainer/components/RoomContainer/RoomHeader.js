@@ -1,7 +1,7 @@
 import React from "react";
 import { makeStyles, createStyles } from "@material-ui/core/styles";
 import { Link } from "react-router-dom";
-import { IconButton } from "@material-ui/core";
+import { IconButton, ClickAwayListener } from "@material-ui/core";
 import { KeyboardArrowLeft } from "@material-ui/icons";
 import { generateRoomName } from "../../utils/room";
 import SearchUserInput from "./SearchUserInput";
@@ -40,27 +40,30 @@ const RoomHeader = ({
   choosingNewMessage,
   clickOnSearchUserInput,
   searchUserInputRef,
+  closeSearchDropdown,
   ...rest
 }) => {
   const classes = useStyles();
   const { pathname } = location;
   return (
-    <div className={classes.roomHeader}>
-      {pathname === "/messenger/new" && (
-        <div className={classes.banner} onClick={clickOnSearchUserInput} />
-      )}
-      <Link to="/messenger">
-        <IconButton className={classes.backButton}>
-          <KeyboardArrowLeft />
-        </IconButton>
-      </Link>
-      {currentRoom && !choosingNewMessage && (
-        <strong>{generateRoomName(currentRoom)}</strong>
-      )}
-      {choosingNewMessage && (
-        <SearchUserInput {...rest} ref={searchUserInputRef} />
-      )}
-    </div>
+    <ClickAwayListener onClickAway={closeSearchDropdown}>
+      <div className={classes.roomHeader}>
+        {pathname === "/messenger/new" && (
+          <div className={classes.banner} onClick={clickOnSearchUserInput} />
+        )}
+        <Link to="/messenger">
+          <IconButton className={classes.backButton}>
+            <KeyboardArrowLeft />
+          </IconButton>
+        </Link>
+        {currentRoom && !choosingNewMessage && (
+          <strong>{generateRoomName(currentRoom)}</strong>
+        )}
+        {choosingNewMessage && (
+          <SearchUserInput {...rest} ref={searchUserInputRef} />
+        )}
+      </div>
+    </ClickAwayListener>
   );
 };
 
