@@ -24,7 +24,7 @@ const useStyles = makeStyles(theme =>
   })
 );
 
-const NewMsgInput = React.forwardRef(
+const SearchUserInput = React.forwardRef(
   (
     {
       receivers,
@@ -32,13 +32,13 @@ const NewMsgInput = React.forwardRef(
       chosenReceiverId,
       handleSearchUserInput,
       searchValue,
-      handleKeyDownNewMsgInput,
+      handleKeyDownSearchUserInput,
       unsetReceiverId,
       searchList,
       loadingSearchList,
       isNoResult,
       closeSearchDropdown,
-      onFocusNewMsgInput
+      onFocusSearchUserInput
     },
     ref
   ) => {
@@ -55,11 +55,11 @@ const NewMsgInput = React.forwardRef(
         <input
           autoFocus
           ref={ref}
-          onFocus={onFocusNewMsgInput}
+          onFocus={onFocusSearchUserInput}
           onBlur={closeSearchDropdown}
           value={searchValue}
           onChange={handleSearchUserInput}
-          onKeyDown={handleKeyDownNewMsgInput}
+          onKeyDown={handleKeyDownSearchUserInput}
           className={classes.newMsgInput}
           placeholder={!hasReceiver ? "Type the name of a person or group" : ""}
         />
@@ -73,4 +73,4 @@ const NewMsgInput = React.forwardRef(
   }
 );
 
-export default NewMsgInput;
+export default SearchUserInput;

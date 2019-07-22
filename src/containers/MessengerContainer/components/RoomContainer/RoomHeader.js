@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import { IconButton } from "@material-ui/core";
 import { KeyboardArrowLeft } from "@material-ui/icons";
 import { generateRoomName } from "../../utils/room";
-import NewMsgInput from "./NewMsgInput";
+import SearchUserInput from "./SearchUserInput";
 
 const useStyles = makeStyles(theme =>
   createStyles({
@@ -38,8 +38,8 @@ const RoomHeader = ({
   location,
   currentRoom,
   choosingNewMessage,
-  clickOnNewMsgInput,
-  newMsgInputRef,
+  clickOnSearchUserInput,
+  searchUserInputRef,
   ...rest
 }) => {
   const classes = useStyles();
@@ -47,7 +47,7 @@ const RoomHeader = ({
   return (
     <div className={classes.roomHeader}>
       {pathname === "/messenger/new" && (
-        <div className={classes.banner} onClick={clickOnNewMsgInput} />
+        <div className={classes.banner} onClick={clickOnSearchUserInput} />
       )}
       <Link to="/messenger">
         <IconButton className={classes.backButton}>
@@ -57,7 +57,9 @@ const RoomHeader = ({
       {currentRoom && !choosingNewMessage && (
         <strong>{generateRoomName(currentRoom)}</strong>
       )}
-      {choosingNewMessage && <NewMsgInput {...rest} ref={newMsgInputRef} />}
+      {choosingNewMessage && (
+        <SearchUserInput {...rest} ref={searchUserInputRef} />
+      )}
     </div>
   );
 };

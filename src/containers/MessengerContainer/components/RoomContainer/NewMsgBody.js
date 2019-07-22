@@ -38,7 +38,13 @@ const useStyles = makeStyles(theme =>
   })
 );
 
-const NewMsgBody = ({ windowHeight, receivers }) => {
+const NewMsgBody = ({
+  windowHeight,
+  receivers,
+  newMsgValue,
+  handleNewMsg,
+  submitNewMsg
+}) => {
   const classes = useStyles();
   const firstUser = receivers[0];
   return (
@@ -51,7 +57,11 @@ const NewMsgBody = ({ windowHeight, receivers }) => {
           <ReceiverInfo classes={classes} data={firstUser} />
         )}
       </div>
-      <Input />
+      <Input
+        submit={submitNewMsg}
+        handleChange={handleNewMsg}
+        value={newMsgValue}
+      />
     </div>
   );
 };

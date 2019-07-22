@@ -47,7 +47,7 @@ const withMessengerHandler = Messenger =>
     }
     componentDidMount = async () => {
       this._isMounted = true;
-      this.newMsgInputRef = React.createRef();
+      this.searchUserInputRef = React.createRef();
       // get window's size
       this.setWindowSize();
       window.addEventListener("resize", this.delayedResize);
@@ -128,7 +128,7 @@ const withMessengerHandler = Messenger =>
     chooseNewConversation = () => {
       this.props.history.push("/messenger/new");
     };
-    // handle new msg input
+    // handle searching user input
     handleSearchUserInput = e => {
       e.persist();
       const keyword = e.target.value;
@@ -182,10 +182,10 @@ const withMessengerHandler = Messenger =>
         isNoResult: false
       });
     };
-    onFocusNewMsgInput = () => {
+    onFocusSearchUserInput = () => {
       this.autocompleteSearch(this.state.searchValue);
     };
-    handleKeyDownNewMsgInput = e => {
+    handleKeyDownSearchUserInput = e => {
       if (e.isComposing || e.keyCode === 229) {
         return;
       }
@@ -197,10 +197,10 @@ const withMessengerHandler = Messenger =>
         this.removeReceiver("last");
       }
     };
-    clickOnNewMsgInput = () => {
+    clickOnSearchUserInput = () => {
       const { pathname } = this.props.location;
       if (pathname !== "/messenger/new") return;
-      this.newMsgInputRef.current.focus();
+      this.searchUserInputRef.current.focus();
     };
     // handle receivers
     addNewReceiver = person => {
@@ -362,7 +362,7 @@ const withMessengerHandler = Messenger =>
         <Messenger
           {...this.state}
           {...this.props}
-          newMsgInputRef={this.newMsgInputRef}
+          searchUserInputRef={this.searchUserInputRef}
           closeNewConversation={this.closeNewConversation}
           chooseCurrentRoom={this.chooseCurrentRoom}
           updateMsgTree={this.updateMsgTree}
@@ -371,12 +371,12 @@ const withMessengerHandler = Messenger =>
           addNewReceiver={this.addNewReceiver}
           removeReceiver={this.removeReceiver}
           chooseReceiverToRemove={this.chooseReceiverToRemove}
-          clickOnNewMsgInput={this.clickOnNewMsgInput}
+          clickOnSearchUserInput={this.clickOnSearchUserInput}
           handleSearchUserInput={this.handleSearchUserInput}
-          handleKeyDownNewMsgInput={this.handleKeyDownNewMsgInput}
+          handleKeyDownSearchUserInput={this.handleKeyDownSearchUserInput}
           unsetReceiverId={this.unsetReceiverId}
           closeSearchDropdown={this.closeSearchDropdown}
-          onFocusNewMsgInput={this.onFocusNewMsgInput}
+          onFocusSearchUserInput={this.onFocusSearchUserInput}
         />
       );
     }
