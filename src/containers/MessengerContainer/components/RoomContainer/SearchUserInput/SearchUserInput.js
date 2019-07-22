@@ -37,8 +37,8 @@ const SearchUserInput = React.forwardRef(
       searchList,
       loadingSearchList,
       isNoResult,
-      closeSearchDropdown,
-      onFocusSearchUserInput
+      onFocusSearchUserInput,
+      addNewReceiver
     },
     ref
   ) => {
@@ -56,7 +56,6 @@ const SearchUserInput = React.forwardRef(
           autoFocus
           ref={ref}
           onFocus={onFocusSearchUserInput}
-          onBlur={closeSearchDropdown}
           value={searchValue}
           onChange={handleSearchUserInput}
           onKeyDown={handleKeyDownSearchUserInput}
@@ -67,6 +66,7 @@ const SearchUserInput = React.forwardRef(
           searchList={searchList}
           loadingSearchList={loadingSearchList}
           isNoResult={isNoResult}
+          addNewReceiver={addNewReceiver}
         />
       </div>
     );

@@ -10,30 +10,32 @@ const INITIAL_STATE = {
   showingNewMessage: false,
   choosingNewMessage: false,
   receivers: [
-    {
-      _id: "123",
-      fullName: "Tester 1",
-      username: "tester1",
-      email: "tester1@simplechat.simplechat"
-    },
-    {
-      _id: "421",
-      fullName: "Tester-2",
-      username: "tester2",
-      email: "tester2@simplechat.simplechat"
-    },
-    {
-      _id: "333",
-      fullName: "Tester-3",
-      username: "tester3",
-      email: "tester3@simplechat.simplechat"
-    }
+    // {
+    //   _id: "123",
+    //   fullName: "Tester 1",
+    //   username: "tester1",
+    //   email: "tester1@simplechat.simplechat"
+    // },
+    // {
+    //   _id: "421",
+    //   fullName: "Tester-2",
+    //   username: "tester2",
+    //   email: "tester2@simplechat.simplechat"
+    // },
+    // {
+    //   _id: "333",
+    //   fullName: "Tester-3",
+    //   username: "tester3",
+    //   email: "tester3@simplechat.simplechat"
+    // }
   ],
   chosenReceiverId: null,
   searchValue: "",
   searchList: [],
   loadingSearchList: false,
-  isNoResult: false
+  isNoResult: false,
+  newMsgValue: "",
+  isSubmittingNewMsg: false
 };
 
 const withMessengerHandler = Messenger =>
@@ -128,6 +130,42 @@ const withMessengerHandler = Messenger =>
     chooseNewConversation = () => {
       this.props.history.push("/messenger/new");
     };
+    // handle new msg input
+    handleNewMsgInput = e => {
+      this.setMountedState({
+        newMsgValue: e.targeterror
+      });
+    };
+    submitNewMsg = async () => {
+      let { newMsgValue } = this.state;
+      const { receivers, isSubmittingNewMsg } = this.state;
+      newMsgValue = newMsgValue.trim();
+
+      // stop if newMsgValue is empty
+      // or submitNewMsg is in progress
+      // or receiver-list is empty
+      if (!newMsgValue || isSubmittingNewMsg || receivers.length === 0) return;
+
+      this.setMountedState({
+        isSubmittingNewMsg: true
+      });
+
+      try {
+        const res = await request({
+          url: `/rooms`,
+          method: "POST",
+          data: {
+            members: receivers,
+            firstMsg: newMsgValue
+          }
+        });
+
+        this.getPrivateRooms();
+        this.props.history.push(`/messenger/t/${res.data.value._id}`);
+      } catch (error) {
+        console.log("error", error);
+      }
+    };
     // handle searching user input
     handleSearchUserInput = e => {
       e.persist();
@@ -179,10 +217,12 @@ const withMessengerHandler = Messenger =>
       this.setMountedState({
         searchList: [],
         loadingSearchList: false,
-        isNoResult: false
+        isNoResult: false,
+        isReceiverInputFocusing: false
       });
     };
     onFocusSearchUserInput = () => {
+      this.setMountedState({ isReceiverInputFocusing: true });
       this.autocompleteSearch(this.state.searchValue);
     };
     handleKeyDownSearchUserInput = e => {
@@ -203,12 +243,15 @@ const withMessengerHandler = Messenger =>
       this.searchUserInputRef.current.focus();
     };
     // handle receivers
-    addNewReceiver = person => {
-      this.setState(prevState => {
+    addNewReceiver = person => async e => {
+      await this.setState(prevState => {
         return {
-          receivers: prevState.push(person)
+          receivers: prevState.receivers.concat(person),
+          searchValue: ""
         };
       });
+      this.closeSearchDropdown();
+      this.searchUserInputRef.current.focus();
     };
     removeReceiver = position => {
       this.setState(prevState => {
@@ -235,10 +278,12 @@ const withMessengerHandler = Messenger =>
       if (e.isComposing || e.keyCode === 229) {
         return;
       }
-      const { chosenReceiverId } = this.state;
-      if (!chosenReceiverId) return;
-      if (e.keyCode === 8) {
+      const { chosenReceiverId, isReceiverInputFocusing } = this.state;
+      if (e.keyCode === 8 && isReceiverInputFocusing) {
         this.removeReceiver();
+      }
+      if (e.keyCode === 9 && !chosenReceiverId) {
+        this.closeSearchDropdown();
       }
     };
     //=====================================

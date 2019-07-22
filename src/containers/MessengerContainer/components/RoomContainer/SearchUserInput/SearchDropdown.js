@@ -22,7 +22,9 @@ const useStylesDropdown = makeStyles(theme =>
       top: 67,
       width: 250,
       maxHeight: 320,
-      flowY: "auto"
+      overflowY: "auto",
+      zIndex: 2,
+      backgroundColor: "white"
     },
     searchListContainer: {
       padding: "6px 0"
@@ -60,7 +62,12 @@ const useStylesItem = makeStyles(theme =>
   })
 );
 
-const SearchDropdown = ({ searchList, loadingSearchList, isNoResult }) => {
+const SearchDropdown = ({
+  searchList,
+  loadingSearchList,
+  isNoResult,
+  addNewReceiver
+}) => {
   const classes = useStylesDropdown();
   if (loadingSearchList || searchList.length > 0 || isNoResult)
     return (
@@ -70,7 +77,13 @@ const SearchDropdown = ({ searchList, loadingSearchList, isNoResult }) => {
             <div className={classes.partTitle}>Contacts</div>
           )}
           {searchList &&
-            searchList.map(item => <SearchItem key={item._id} data={item} />)}
+            searchList.map(item => (
+              <SearchItem
+                key={item._id}
+                data={item}
+                addNewReceiver={addNewReceiver}
+              />
+            ))}
           {loadingSearchList && <LoadingItem />}
           {isNoResult && <NoResultItem />}
         </List>
@@ -79,11 +92,11 @@ const SearchDropdown = ({ searchList, loadingSearchList, isNoResult }) => {
   return null;
 };
 
-const SearchItem = ({ data }) => {
+const SearchItem = ({ data, addNewReceiver }) => {
   const classes = useStylesItem();
   const { fullName } = data;
   return (
-    <ListItem className={classes.searchItem}>
+    <ListItem className={classes.searchItem} onClick={addNewReceiver(data)}>
       <ListItemAvatar className={classes.itemAvatar}>
         <Avatar className={classes.avatarContainer}>
           <AccountCircleIcon className={classes.avatarIcon} />
