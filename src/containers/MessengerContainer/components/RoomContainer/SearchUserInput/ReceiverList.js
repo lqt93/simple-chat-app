@@ -21,7 +21,6 @@ const ReceiverList = ({
 }) => {
   const classes = useStyles();
   if (receivers.length === 0) return null;
-  console.log(">>>>> receivers", receivers);
   return (
     <List className={classes.receiverList} onBlur={unsetReceiverId}>
       {receivers.map(user => {

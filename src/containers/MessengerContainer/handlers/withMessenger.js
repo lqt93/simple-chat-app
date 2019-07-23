@@ -132,11 +132,13 @@ const withMessengerHandler = Messenger =>
     };
     // handle new msg input
     handleNewMsgInput = e => {
+      // e.persist();
       this.setMountedState({
-        newMsgValue: e.targeterror
+        newMsgValue: e.target.value
       });
     };
-    submitNewMsg = async () => {
+    submitNewMsg = async e => {
+      e.preventDefault();
       let { newMsgValue } = this.state;
       const { receivers, isSubmittingNewMsg } = this.state;
       newMsgValue = newMsgValue.trim();
@@ -150,20 +152,36 @@ const withMessengerHandler = Messenger =>
         isSubmittingNewMsg: true
       });
 
+      // convert to _id array
+      const members = receivers.map(receiver => receiver._id);
+
       try {
         const res = await request({
           url: `/rooms`,
           method: "POST",
           data: {
-            members: receivers,
+            members,
             firstMsg: newMsgValue
           }
         });
-
-        this.getPrivateRooms();
-        this.props.history.push(`/messenger/t/${res.data.value._id}`);
+        this.closeNewConversation();
+        this.setMountedState({
+          isSubmittingNewMsg: false
+        });
+        const roomParticipant = res.data.value;
+        roomParticipant.room.members = roomParticipant.room.members.filter(
+          member => member._id !== this.props.authUser._id
+        );
+        this.setMountedState({
+          rooms: [roomParticipant, ...this.state.rooms]
+        });
+        if (res.data.value._id)
+          this.props.history.push(`/messenger/t/${roomParticipant.room._id}`);
       } catch (error) {
         console.log("error", error);
+        this.setMountedState({
+          isSubmittingNewMsg: false
+        });
       }
     };
     // handle searching user input
@@ -307,7 +325,13 @@ const withMessengerHandler = Messenger =>
       const roomId = this.props.match.params.id;
       if (!roomId) {
         const { rooms } = this.state;
-        return this.props.history.push(`/messenger/t/${rooms[0].room._id}`);
+        return this.props.history.push(
+          `${
+            rooms.length === 0
+              ? "/messenger"
+              : `/messenger/t/${rooms[0].room._id}`
+          }`
+        );
       } else {
         try {
           const foundRoom = await this.checkRoomId(roomId);
@@ -422,6 +446,8 @@ const withMessengerHandler = Messenger =>
           unsetReceiverId={this.unsetReceiverId}
           closeSearchDropdown={this.closeSearchDropdown}
           onFocusSearchUserInput={this.onFocusSearchUserInput}
+          handleNewMsgInput={this.handleNewMsgInput}
+          submitNewMsg={this.submitNewMsg}
         />
       );
     }
