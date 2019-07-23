@@ -18,9 +18,11 @@ const MessageItem = ({ data }) => {
           style={{
             backgroundColor: data.isAuthOwner ? "#3578E5" : "#f1f0f0",
             color: data.isAuthOwner ? "white" : "black",
-            padding: 4,
+            padding: "6px 9px",
+            borderRadius: 8,
             margin: "4px 0px",
-            maxWidth: "100%"
+            maxWidth: "100%",
+            display: "inline-block"
           }}
         >
           {data.value}
