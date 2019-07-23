@@ -1,6 +1,6 @@
 import React from "react";
 import { makeStyles, createStyles } from "@material-ui/core/styles";
-import { Avatar, Typography } from "@material-ui/core";
+import { Avatar, Typography, CircularProgress } from "@material-ui/core";
 import { AccountCircle as AccountCircleIcon } from "@material-ui/icons";
 import Input from "../ChatBox/Input";
 
@@ -34,6 +34,13 @@ const useStyles = makeStyles(theme =>
       color: "rgba(0, 0, 0, .40)",
       fontSize: theme.typography.fontSize,
       marginBottom: theme.spacing(0.5)
+    },
+    loading: {
+      width: "100%",
+      height: "100%",
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center"
     }
   })
 );
@@ -42,11 +49,19 @@ const NewMsgBody = ({
   windowHeight,
   receivers,
   newMsgValue,
-  handleNewMsg,
-  submitNewMsg
+  handleNewMsgInput,
+  submitNewMsg,
+  isSubmittingNewMsg
 }) => {
   const classes = useStyles();
   const firstUser = receivers[0];
+  // if is submitting new-msg
+  if (isSubmittingNewMsg)
+    return (
+      <div className={classes.loading} style={{ height: windowHeight - 132 }}>
+        <CircularProgress />
+      </div>
+    );
   return (
     <div className={classes.newMsgBody}>
       <div
@@ -59,7 +74,7 @@ const NewMsgBody = ({
       </div>
       <Input
         submit={submitNewMsg}
-        handleChange={handleNewMsg}
+        handleChange={handleNewMsgInput}
         value={newMsgValue}
       />
     </div>
