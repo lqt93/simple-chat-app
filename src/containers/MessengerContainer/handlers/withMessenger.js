@@ -376,6 +376,20 @@ const withMessengerHandler = Messenger =>
     chooseCurrentRoom = roomId => () => {
       this.setMountedState({ currentRoomId: roomId });
     };
+    modifyCurrentRoom = newRoom => {
+      let currentConnection = {};
+      const rooms = this.state.rooms.filter(connection => {
+        if (connection.room._id === newRoom._id) {
+          currentConnection = connection;
+          currentConnection.room = newRoom;
+        }
+        return connection.room._id !== newRoom._id;
+      });
+      rooms.unshift(currentConnection);
+      this.setMountedState({
+        rooms
+      });
+    };
     //=====================================
     // handle list of rooms
     //=====================================
@@ -448,6 +462,7 @@ const withMessengerHandler = Messenger =>
           onFocusSearchUserInput={this.onFocusSearchUserInput}
           handleNewMsgInput={this.handleNewMsgInput}
           submitNewConversation={this.submitNewConversation}
+          modifyCurrentRoom={this.modifyCurrentRoom}
         />
       );
     }

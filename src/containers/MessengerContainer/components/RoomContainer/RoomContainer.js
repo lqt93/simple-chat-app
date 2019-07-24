@@ -3,6 +3,7 @@ import { makeStyles, createStyles } from "@material-ui/core/styles";
 import RoomHeader from "./RoomHeader";
 import RoomBody from "./RoomBody";
 import NewConversationBody from "./NewConversationBody";
+import withCurrentRoom from "../../handlers/withCurrentRoom";
 
 const useStyles = makeStyles(theme =>
   createStyles({
@@ -31,4 +32,4 @@ const RoomContainer = props => {
   );
 };
 
-export default RoomContainer;
+export default withCurrentRoom(RoomContainer);
