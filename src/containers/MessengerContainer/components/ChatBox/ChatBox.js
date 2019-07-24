@@ -51,13 +51,14 @@ const ChatBox = React.forwardRef(
     ref
   ) => {
     const classes = useStyles();
+    const msgListHeight = windowHeight - 182;
     return (
       <div className={classes.chatBoxContainer}>
         <div
           className={classes.presentation}
           ref={ref}
           onScroll={handleScroll}
-          style={{ height: windowHeight - 182 }}
+          style={{ height: msgListHeight }}
         >
           {!loadingMessages && loadingMore && (
             <div className={classes.loadingMoreContainer}>

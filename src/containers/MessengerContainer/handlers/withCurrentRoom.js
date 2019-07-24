@@ -2,7 +2,8 @@ import React from "react";
 import request from "../../../utils/request";
 
 const INITIAL_STATE = {
-  isOpeningRoomNameInput: false
+  isOpeningRoomNameInput: false,
+  nameInputValue: ""
 };
 
 const withCurrentRoomHandler = CurrentRoomComponent =>
@@ -21,11 +22,26 @@ const withCurrentRoomHandler = CurrentRoomComponent =>
       if (currentRoomId !== nextRoomId) {
       }
     }
-    submitNewRoomName = async e => {
+    submitNewRoomName = e => {
       try {
         if (e) e.preventDefault();
         const { currentRoom } = this.props;
-        currentRoom.name = this.state.nameInputValue.trim();
+        const newName = this.state.nameInputValue.trim();
+
+        if (!currentRoom.name && !newName)
+          return this.setMountedState({
+            isOpeningRoomNameInput: false
+          });
+
+        const res = request({
+          url: `/rooms/${currentRoom._id}/name`,
+          method: "PUT",
+          data: {
+            newName
+          }
+        });
+
+        currentRoom.name = newName;
         this.props.modifyCurrentRoom(currentRoom);
         this.setMountedState({
           isOpeningRoomNameInput: false

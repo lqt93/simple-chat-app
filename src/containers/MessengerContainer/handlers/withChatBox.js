@@ -99,14 +99,21 @@ const withChatBoxHandler = ChatBox =>
       const { authUser } = this.props;
       msg.isAuthOwner = authUser._id === msg.owner._id;
 
-      // look up in current msg list to check if incoming msg is exist or not
-      const updatingMessages = this.state.messages.map(item => {
-        if (item.timeTicket === msg.timeTicket) {
-          isExistMsg = true;
-          item = msg;
-        }
-        return item;
-      });
+      let updatingMessages = [];
+      if (msg.type === "text") {
+        // look up in current msg list to check if incoming msg is exist or not
+        updatingMessages = this.state.messages.map(item => {
+          if (item.timeTicket === msg.timeTicket) {
+            isExistMsg = true;
+            item = msg;
+          }
+          return item;
+        });
+      }
+
+      if (msg.type.indexOf("action") >= 0) {
+        updatingMessages = this.state.messages.concat(msg);
+      }
 
       if (isExistMsg)
         return this.setMountedState({

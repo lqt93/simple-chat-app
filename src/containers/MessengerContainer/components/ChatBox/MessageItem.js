@@ -1,6 +1,35 @@
 import React from "react";
 
 const MessageItem = ({ data }) => {
+  return data.type === "text" ? (
+    <TextMsg data={data} />
+  ) : (
+    <ActionMsg data={data} />
+  );
+};
+
+const ActionMsg = ({ data }) => {
+  return (
+    <li
+      style={{
+        display: "flex",
+        flexDirection: "row",
+        justifyContent: "center",
+        alignItems: "center",
+        width: "100%",
+        marginBottom: 16
+      }}
+    >
+      {data.isAuthOwner ? "You" : data.owner.fullName}{" "}
+      {!!data.value
+        ? `named the group ${data.value}`
+        : "removed the group name"}
+      .
+    </li>
+  );
+};
+
+const TextMsg = ({ data }) => {
   return (
     <li
       style={{
