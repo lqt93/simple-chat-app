@@ -137,14 +137,14 @@ const withMessengerHandler = Messenger =>
         newMsgValue: e.target.value
       });
     };
-    submitNewMsg = async e => {
+    submitNewConversation = async e => {
       e.preventDefault();
       let { newMsgValue } = this.state;
       const { receivers, isSubmittingNewMsg } = this.state;
       newMsgValue = newMsgValue.trim();
 
       // stop if newMsgValue is empty
-      // or submitNewMsg is in progress
+      // or submitNewConversation is in progress
       // or receiver-list is empty
       if (!newMsgValue || isSubmittingNewMsg || receivers.length === 0) return;
 
@@ -447,7 +447,7 @@ const withMessengerHandler = Messenger =>
           closeSearchDropdown={this.closeSearchDropdown}
           onFocusSearchUserInput={this.onFocusSearchUserInput}
           handleNewMsgInput={this.handleNewMsgInput}
-          submitNewMsg={this.submitNewMsg}
+          submitNewConversation={this.submitNewConversation}
         />
       );
     }

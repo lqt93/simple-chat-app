@@ -6,7 +6,7 @@ import Input from "../ChatBox/Input";
 
 const useStyles = makeStyles(theme =>
   createStyles({
-    newMsgBody: {},
+    newConversationBody: {},
     newMsgBlock: {
       borderBottom: "1px solid rgba(0, 0, 0, 0.2)",
       flowY: "auto"
@@ -45,12 +45,12 @@ const useStyles = makeStyles(theme =>
   })
 );
 
-const NewMsgBody = ({
+const NewConversationBody = ({
   windowHeight,
   receivers,
   newMsgValue,
   handleNewMsgInput,
-  submitNewMsg,
+  submitNewConversation,
   isSubmittingNewMsg
 }) => {
   const classes = useStyles();
@@ -63,7 +63,7 @@ const NewMsgBody = ({
       </div>
     );
   return (
-    <div className={classes.newMsgBody}>
+    <div className={classes.newConversationBody}>
       <div
         className={classes.newMsgBlock}
         style={{ height: windowHeight - 182 }}
@@ -73,7 +73,7 @@ const NewMsgBody = ({
         )}
       </div>
       <Input
-        submit={submitNewMsg}
+        submit={submitNewConversation}
         handleChange={handleNewMsgInput}
         value={newMsgValue}
       />
@@ -99,4 +99,4 @@ const ReceiverInfo = ({ classes, data }) => {
   );
 };
 
-export default NewMsgBody;
+export default NewConversationBody;
