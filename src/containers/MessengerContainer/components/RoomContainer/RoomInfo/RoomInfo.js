@@ -25,8 +25,12 @@ const RoomInfo = props => {
   const { currentRoom, windowHeight } = props;
   return (
     <div className={classes.infoPanel} style={{ height: windowHeight - 132 }}>
-      <RoomName {...props} />
-      {currentRoom.type === "group" && <RoomPeople {...props} />}
+      {currentRoom && (
+        <React.Fragment>
+          <RoomName {...props} />
+          {currentRoom.type === "group" && <RoomPeople {...props} />}
+        </React.Fragment>
+      )}
     </div>
   );
 };
