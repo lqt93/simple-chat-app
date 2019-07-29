@@ -12,6 +12,7 @@ const useStyles = makeStyles(theme =>
       minWidth: 200,
       display: "flex",
       flexDirection: "column",
+      overflowY: "auto",
       [theme.breakpoints.down("xs")]: {
         display: "none"
       }
@@ -21,9 +22,9 @@ const useStyles = makeStyles(theme =>
 
 const RoomInfo = props => {
   const classes = useStyles();
-  const { currentRoom } = props;
+  const { currentRoom, windowHeight } = props;
   return (
-    <div className={classes.infoPanel}>
+    <div className={classes.infoPanel} style={{ height: windowHeight - 132 }}>
       <RoomName {...props} />
       {currentRoom.type === "group" && <RoomPeople {...props} />}
     </div>
