@@ -1,6 +1,7 @@
 import React from "react";
 import { makeStyles, createStyles } from "@material-ui/core/styles";
 import RoomName from "./RoomName";
+import RoomPeople from "./RoomPeople";
 
 const useStyles = makeStyles(theme =>
   createStyles({
@@ -20,9 +21,11 @@ const useStyles = makeStyles(theme =>
 
 const RoomInfo = props => {
   const classes = useStyles();
+  const { currentRoom } = props;
   return (
     <div className={classes.infoPanel}>
       <RoomName {...props} />
+      {currentRoom.type === "group" && <RoomPeople {...props} />}
     </div>
   );
 };

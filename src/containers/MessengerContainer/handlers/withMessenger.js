@@ -69,18 +69,20 @@ const withMessengerHandler = Messenger =>
       // disconnect socket
       disconnectSocket();
     }
-    componentWillReceiveProps(nextProps) {
+    componentWillReceiveProps = async nextProps => {
       const currentRoomId = this.props.match.params.id;
       const nextRoomId = nextProps.match.params.id;
       if (currentRoomId !== nextRoomId) {
-        const participant = this.state.rooms.find(
-          item => item.room._id === nextRoomId
-        );
         socket.emit("leave_room", currentRoomId);
         socket.emit("join_room", nextRoomId);
         this.setMountedState({
-          currentRoomId: nextRoomId,
-          currentRoom: (participant && participant.room) || {}
+          currentRoomId: nextRoomId
+        });
+        const foundedRoomConnection = await this.checkRoomConnectionId(
+          nextRoomId
+        );
+        this.setMountedState({
+          currentRoom: foundedRoomConnection.room || {}
         });
       }
       const currentPathname = this.props.location.pathname;
@@ -94,7 +96,7 @@ const withMessengerHandler = Messenger =>
             this.state.showingNewMessage
         });
       }
-    }
+    };
     //=====================================
     // handle window size
     //=====================================
@@ -169,9 +171,6 @@ const withMessengerHandler = Messenger =>
           isSubmittingNewMsg: false
         });
         const roomParticipant = res.data.value;
-        roomParticipant.room.members = roomParticipant.room.members.filter(
-          member => member._id !== this.props.authUser._id
-        );
         this.setMountedState({
           rooms: [roomParticipant, ...this.state.rooms]
         });
@@ -334,8 +333,10 @@ const withMessengerHandler = Messenger =>
         );
       } else {
         try {
-          const foundRoom = await this.checkRoomId(roomId);
-          this.setCurrentRoom(foundRoom);
+          const foundedRoomConnection = await this.checkRoomConnectionId(
+            roomId
+          );
+          this.setCurrentRoom(foundedRoomConnection);
         } catch (error) {
           console.log("err", error);
           const { rooms } = this.state;
@@ -348,7 +349,7 @@ const withMessengerHandler = Messenger =>
     // handle current room
     //=====================================
     // check room's id in path
-    checkRoomId = async roomId =>
+    checkRoomConnectionId = async roomId =>
       new Promise(async (resolve, reject) => {
         try {
           const res = await request({
@@ -356,21 +357,18 @@ const withMessengerHandler = Messenger =>
             method: "GET"
           });
           if (!res.data.value) reject("Room not found");
-          const foundRoom = res.data.value.room;
-          resolve(foundRoom);
+          const foundedRoomConnection = res.data.value;
+          resolve(foundedRoomConnection);
         } catch (error) {
           reject(error);
         }
       });
-    setCurrentRoom = foundRoom => {
-      const targetId = foundRoom.room._id;
+    setCurrentRoom = foundedRoomConnection => {
+      const targetId = foundedRoomConnection.room._id;
       socket.emit("join_room", targetId);
-      foundRoom.room.members = foundRoom.room.members.filter(
-        member => member._id !== this.props.authUser._id
-      );
       this.setMountedState({
         currentRoomId: targetId,
-        currentRoom: foundRoom.room
+        currentRoom: foundedRoomConnection.room
       });
     };
     chooseCurrentRoom = roomId => () => {
@@ -401,12 +399,6 @@ const withMessengerHandler = Messenger =>
             method: "GET"
           });
           let { rooms } = res.data.value;
-          rooms = rooms.map(item => {
-            item.room.members = item.room.members.filter(
-              member => member._id !== this.props.authUser._id
-            );
-            return item;
-          });
           await this.setMountedState({
             rooms
           });

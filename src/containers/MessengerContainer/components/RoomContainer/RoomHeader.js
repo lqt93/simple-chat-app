@@ -41,6 +41,7 @@ const RoomHeader = ({
   clickOnSearchUserInput,
   searchUserInputRef,
   closeSearchDropdown,
+  authUser,
   ...rest
 }) => {
   const classes = useStyles();
@@ -57,7 +58,7 @@ const RoomHeader = ({
           </IconButton>
         </Link>
         {currentRoom && !choosingNewMessage && (
-          <strong>{generateRoomName(currentRoom)}</strong>
+          <strong>{generateRoomName(currentRoom, authUser)}</strong>
         )}
         {choosingNewMessage && (
           <SearchUserInput {...rest} ref={searchUserInputRef} />

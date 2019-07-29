@@ -5,6 +5,8 @@ export const generateRoomName = room => {
 
 const generateNameFromMembers = members => {
   if (!members || members.length === 0) return null;
+  const authUser = JSON.parse(localStorage.getItem("authUser"));
+  members = members.filter(member => member._id !== authUser._id);
   switch (true) {
     case members.length === 1:
       return members[0].fullName;
