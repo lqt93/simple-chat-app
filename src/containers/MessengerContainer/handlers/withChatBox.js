@@ -1,6 +1,7 @@
 import React from "react";
 import request from "../../../utils/request";
 import { socket } from "../../../utils/socket";
+import soundfile from "../../../assets/light.mp3";
 
 const INITIAL_STATE = {
   messages: null,
@@ -127,6 +128,9 @@ const withChatBoxHandler = ChatBox =>
           messages
         };
       });
+
+      let audio = new Audio(soundfile);
+      audio.play();
 
       // scroll to bottom to show new messages
       this.scrollToBottom();
